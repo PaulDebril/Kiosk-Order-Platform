@@ -1,0 +1,1 @@
+dotnet run --project KioskApi/KioskApi.Core/KioskApi.Core.csproj
