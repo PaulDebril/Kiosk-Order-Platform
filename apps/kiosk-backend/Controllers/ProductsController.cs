@@ -12,20 +12,19 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll() =>
-        Ok(_service.GetAll());
+    public IActionResult GetAll() => Ok(_service.GetAll());
 
     [HttpGet("{id}")]
     public IActionResult GetById(Guid id)
     {
-        var product = _service.GetById(id);
-        return product == null ? NotFound() : Ok(product);
+        var p = _service.GetById(id);
+        return p == null ? NotFound() : Ok(p);
     }
 
     [HttpPost]
-    public IActionResult Create(Product p)
+    public IActionResult Create(Product product)
     {
-        var created = _service.Create(p);
+        var created = _service.Create(product);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 

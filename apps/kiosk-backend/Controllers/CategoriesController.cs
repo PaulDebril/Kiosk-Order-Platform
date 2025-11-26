@@ -12,13 +12,8 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll() =>
-        Ok(_service.GetAll());
+    public IActionResult GetAll() => Ok(_service.GetAll());
 
     [HttpPost]
-    public IActionResult Create(Category c)
-    {
-        var created = _service.Create(c);
-        return Ok(created);
-    }
+    public IActionResult Create(Category c) => Ok(_service.Create(c));
 }

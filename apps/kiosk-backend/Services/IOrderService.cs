@@ -1,6 +1,6 @@
 public interface IOrderService
 {
-    Order Create(Order order);
-    Order? GetById(Guid id);
     IEnumerable<Order> GetAll();
+    Order? GetById(Guid id);
+    Order Create(Order o);
 }

@@ -7,8 +7,15 @@ public class MenuService : IMenuService
         _db = db;
     }
 
-    public IEnumerable<MenuItem> GetAll() => _db.MenuItems;
+    public IEnumerable<Menu> GetAll() => _db.Menus;
 
-    public MenuItem? GetById(Guid id) =>
-        _db.MenuItems.FirstOrDefault(m => m.Id == id);
+    public Menu? GetById(Guid id) =>
+        _db.Menus.FirstOrDefault(m => m.Id == id);
+
+    public Menu Create(Menu m)
+    {
+        m.Id = Guid.NewGuid();
+        _db.Menus.Add(m);
+        return m;
+    }
 }

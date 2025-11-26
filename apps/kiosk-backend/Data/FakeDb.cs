@@ -1,140 +1,175 @@
 public class FakeDb
 {
-    public List<Product> Products { get; set; } = new();
     public List<Category> Categories { get; set; } = new();
-    public List<MenuItem> MenuItems { get; set; } = new();
+    public List<Ingredient> Ingredients { get; set; } = new();
+    public List<Product> Products { get; set; } = new();
+    public List<Extra> Extras { get; set; } = new();
+    public List<Menu> Menus { get; set; } = new();
     public List<Order> Orders { get; set; } = new();
 
     public FakeDb()
     {
 
-        var burgers = new Category { Id = Guid.NewGuid(), Name = "Burgers" };
-        var drinks = new Category { Id = Guid.NewGuid(), Name = "Boissons" };
-        var sides = new Category { Id = Guid.NewGuid(), Name = "Accompagnements" };
-        var desserts = new Category { Id = Guid.NewGuid(), Name = "Desserts" };
+        Ingredient ING(string name) =>
+            new Ingredient { Id = Guid.NewGuid(), Name = name };
 
-        Categories.AddRange(new[] { burgers, drinks, sides, desserts });
+        Category CAT(string name) =>
+            new Category { Id = Guid.NewGuid(), Name = name };
+
+        Extra EX(string name, decimal price) =>
+            new Extra { Id = Guid.NewGuid(), Name = name, Price = price };
 
 
-        var bigBurger = new Product
+        var ingSteak = ING("Steak");
+        var ingChicken = ING("Poulet croustillant");
+        var ingLettuce = ING("Salade");
+        var ingTomato = ING("Tomate");
+        var ingOnion = ING("Oignons");
+        var ingCheddar = ING("Cheddar");
+        var ingSauceBurger = ING("Sauce Burger");
+
+        Ingredients.AddRange(new[]
         {
-            Id = Guid.NewGuid(),
-            Name = "Big Burger",
-            Description = "Steak + cheddar + sauce maison",
-            Price = 8.50m,
-            CategoryId = burgers.Id
+            ingSteak, ingChicken, ingLettuce, ingTomato, ingOnion,
+            ingCheddar, ingSauceBurger
+        });
+
+        //---------------------------
+        // CATEGORIES
+        //---------------------------
+        var catBurger = CAT("Burgers");
+        var catDrink = CAT("Boissons");
+        var catSide = CAT("Accompagnements");
+        var catDessert = CAT("Desserts");
+
+        Categories.AddRange(new[]
+        {
+            catBurger, catDrink, catSide, catDessert
+        });
+
+
+        var exCheddar = EX("Cheddar Supplément", 1.00m);
+        var exBacon = EX("Bacon", 1.50m);
+        var exSauceBBQ = EX("Sauce BBQ", 0.50m);
+
+        Extras.AddRange(new[] { exCheddar, exBacon, exSauceBBQ });
+
+        var optSize = new ProductOption
+        {
+            Name = "Taille",
+            Choices = new()
+            {
+                new OptionChoice { Label = "M", AdditionalPrice = 0 },
+                new OptionChoice { Label = "L", AdditionalPrice = 0.50m }
+            }
         };
 
-        var chickenBurger = new Product
+        var optIce = new ProductOption
         {
-            Id = Guid.NewGuid(),
-            Name = "Chicken Burger",
-            Description = "Poulet croustillant + mayo",
-            Price = 7.50m,
-            CategoryId = burgers.Id
+            Name = "Glaçons",
+            Choices = new()
+            {
+                new OptionChoice { Label = "Avec glaçons", AdditionalPrice = 0 },
+                new OptionChoice { Label = "Sans glaçons", AdditionalPrice = 0 }
+            }
         };
 
-        var coke = new Product
-        {
-            Id = Guid.NewGuid(),
-            Name = "Coca-Cola",
-            Description = "33cl",
-            Price = 2.50m,
-            CategoryId = drinks.Id
-        };
 
-        var fanta = new Product
-        {
-            Id = Guid.NewGuid(),
-            Name = "Fanta",
-            Description = "33cl",
-            Price = 2.50m,
-            CategoryId = drinks.Id
-        };
+        Product BURGER(string name, decimal price, params Ingredient[] ings) =>
+            new Product
+            {
+                Id = Guid.NewGuid(),
+                Name = name,
+                BasePrice = price,
+                CategoryId = catBurger.Id,
+                Ingredients = ings.Select(i => new ProductIngredient
+                {
+                    IngredientId = i.Id,
+                    IsDefault = true
+                }).ToList(),
+                ExtraIds = new List<Guid> { exCheddar.Id, exBacon.Id, exSauceBBQ.Id }
+            };
+
+        var bigBurger = BURGER("Big Burger", 8.50m,
+            ingSteak, ingCheddar, ingLettuce, ingTomato, ingOnion, ingSauceBurger);
+
+        var chickenBurger = BURGER("Chicken Burger", 7.50m,
+            ingChicken, ingCheddar, ingLettuce);
 
         var fries = new Product
         {
             Id = Guid.NewGuid(),
             Name = "Frites",
-            Description = "Portion moyenne",
-            Price = 3.00m,
-            CategoryId = sides.Id
+            BasePrice = 3.00m,
+            CategoryId = catSide.Id
         };
 
-        var bigFries = new Product
-        {
-            Id = Guid.NewGuid(),
-            Name = "Grande Frites",
-            Description = "Portion grande",
-            Price = 4.00m,
-            CategoryId = sides.Id
-        };
+        Product DRINK(string name) =>
+            new Product
+            {
+                Id = Guid.NewGuid(),
+                Name = name,
+                BasePrice = 2.50m,
+                CategoryId = catDrink.Id,
+                Options = new() { optSize, optIce }
+            };
 
-        var iceCream = new Product
+        var coke = DRINK("Coca-Cola");
+        var sprite = DRINK("Sprite");
+
+        var sundae = new Product
         {
             Id = Guid.NewGuid(),
             Name = "Sundae Vanille",
-            Description = "Avec nappage chocolat",
-            Price = 3.50m,
-            CategoryId = desserts.Id
+            BasePrice = 3.50m,
+            CategoryId = catDessert.Id
         };
 
         Products.AddRange(new[]
         {
-            bigBurger, chickenBurger, coke, fanta, fries, bigFries, iceCream
+            bigBurger, chickenBurger, fries, coke, sprite, sundae
         });
 
 
-        MenuItems.Add(new MenuItem
+        var menuBigBurger = new Menu
         {
             Id = Guid.NewGuid(),
             Title = "Menu Big Burger",
             Price = 12.50m,
-            ProductIds = new List<Guid> { bigBurger.Id, fries.Id, coke.Id }
-        });
+            MainProductId = bigBurger.Id,
+            DrinkProductId = coke.Id,
+            SideProductId = fries.Id
+        };
 
-        MenuItems.Add(new MenuItem
-        {
-            Id = Guid.NewGuid(),
-            Title = "Menu Chicken",
-            Price = 11.50m,
-            ProductIds = new List<Guid> { chickenBurger.Id, bigFries.Id, fanta.Id }
-        });
+        Menus.Add(menuBigBurger);
 
-        MenuItems.Add(new MenuItem
-        {
-            Id = Guid.NewGuid(),
-            Title = "Menu Maxi Gourmand",
-            Price = 15.00m,
-            ProductIds = new List<Guid> { bigBurger.Id, bigFries.Id, coke.Id, iceCream.Id }
-        });
 
 
         Orders.Add(new Order
         {
             Id = Guid.NewGuid(),
-            CreatedAt = DateTime.UtcNow.AddMinutes(-15),
+            CreatedAt = DateTime.UtcNow.AddMinutes(-10),
             Items = new List<OrderItem>
             {
-                new OrderItem { ProductId = bigBurger.Id, Quantity = 1 },
-                new OrderItem { ProductId = fries.Id, Quantity = 1 },
-                new OrderItem { ProductId = coke.Id, Quantity = 1 }
-            },
-            TotalPrice = 8.50m + 3.00m + 2.50m
-        });
-
-        Orders.Add(new Order
-        {
-            Id = Guid.NewGuid(),
-            CreatedAt = DateTime.UtcNow.AddMinutes(-5),
-            Items = new List<OrderItem>
-            {
-                new OrderItem { ProductId = chickenBurger.Id, Quantity = 1 },
-                new OrderItem { ProductId = bigFries.Id, Quantity = 1 },
-                new OrderItem { ProductId = fanta.Id, Quantity = 1 },
-                new OrderItem { ProductId = iceCream.Id, Quantity = 1 },
-            },
-            TotalPrice = 7.50m + 4.00m + 2.50m + 3.50m
+                new OrderItem
+                {
+                    ProductId = bigBurger.Id,
+                    Quantity = 1,
+                    RemovedIngredients = new List<Guid> { ingOnion.Id },
+                    ExtraIds = new List<Guid> { exCheddar.Id },
+                    SelectedOptions = null
+                },
+                new OrderItem
+                {
+                    ProductId = coke.Id,
+                    Quantity = 1,
+                    SelectedOptions = new()
+                    {
+                        new OptionChoice { Label = "L", AdditionalPrice = 0.50m },
+                        new OptionChoice { Label = "Sans glaçons", AdditionalPrice = 0 }
+                    }
+                }
+            }
         });
     }
 }

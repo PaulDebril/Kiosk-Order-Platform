@@ -1,5 +1,6 @@
 public interface IMenuService
 {
-    IEnumerable<MenuItem> GetAll();
-    MenuItem? GetById(Guid id);
+    IEnumerable<Menu> GetAll();
+    Menu? GetById(Guid id);
+    Menu Create(Menu m);
 }

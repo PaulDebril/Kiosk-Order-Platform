@@ -26,8 +26,11 @@ public class ProductService : IProductService
 
         existing.Name = p.Name;
         existing.Description = p.Description;
-        existing.Price = p.Price;
+        existing.BasePrice = p.BasePrice;
         existing.CategoryId = p.CategoryId;
+        existing.Ingredients = p.Ingredients;
+        existing.Options = p.Options;
+        existing.ExtraIds = p.ExtraIds;
 
         return existing;
     }

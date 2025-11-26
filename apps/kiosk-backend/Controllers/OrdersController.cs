@@ -11,21 +11,16 @@ public class OrdersController : ControllerBase
         _service = service;
     }
 
-    [HttpPost]
-    public IActionResult Create(Order o)
-    {
-        var created = _service.Create(o);
-        return Ok(created); 
-    }
+    [HttpGet]
+    public IActionResult GetAll() => Ok(_service.GetAll());
 
     [HttpGet("{id}")]
     public IActionResult GetById(Guid id)
     {
-        var order = _service.GetById(id);
-        return order == null ? NotFound() : Ok(order);
+        var o = _service.GetById(id);
+        return o == null ? NotFound() : Ok(o);
     }
 
-    [HttpGet]
-    public IActionResult GetAll() =>
-        Ok(_service.GetAll());
+    [HttpPost]
+    public IActionResult Create(Order o) => Ok(_service.Create(o));
 }
