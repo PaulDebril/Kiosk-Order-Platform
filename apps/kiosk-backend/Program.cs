@@ -1,12 +1,20 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services
+// Controllers
 builder.Services.AddControllers();
+
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Custom services
-builder.Services.AddScoped<ITestService, TestService>();
+// Fake database (in-memory)
+builder.Services.AddSingleton<FakeDb>();
+
+// Services
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IMenuService, MenuService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 var app = builder.Build();
 

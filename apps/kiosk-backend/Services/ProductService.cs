@@ -1,20 +1,25 @@
 public class ProductService : IProductService
 {
-    private readonly List<Product> _products = new();
+    private readonly FakeDb _db;
 
-    public IEnumerable<Product> GetAll() => _products;
+    public ProductService(FakeDb db)
+    {
+        _db = db;
+    }
+
+    public IEnumerable<Product> GetAll() => _db.Products;
 
     public Product? GetById(Guid id) =>
-        _products.FirstOrDefault(p => p.Id == id);
+        _db.Products.FirstOrDefault(p => p.Id == id);
 
     public Product Create(Product p)
     {
         p.Id = Guid.NewGuid();
-        _products.Add(p);
+        _db.Products.Add(p);
         return p;
     }
 
-    public Product Update(Guid id, Product p)
+    public Product? Update(Guid id, Product p)
     {
         var existing = GetById(id);
         if (existing == null) return null;
@@ -29,7 +34,7 @@ public class ProductService : IProductService
 
     public bool Delete(Guid id)
     {
-        var p = GetById(id);
-        return p != null && _products.Remove(p);
+        var product = GetById(id);
+        return product != null && _db.Products.Remove(product);
     }
 }
