@@ -1,0 +1,6 @@
+@kiosk_backend_HostAddress = http://localhost:5078
+
+GET {{kiosk_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
