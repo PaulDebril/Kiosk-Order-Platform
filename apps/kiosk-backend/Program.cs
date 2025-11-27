@@ -14,6 +14,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IExtraService, ExtraService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ILoyaltyService, LoyaltyService>();
+
 
 var app = builder.Build();
 
