@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import electron from 'vite-plugin-electron'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig(({ mode }) => {
   // IMPORTANT : On active Electron si on fait "npm start" (mode electron)
@@ -10,6 +11,7 @@ export default defineConfig(({ mode }) => {
   return {
     base: './', // Indispensable pour l'écran blanc (chemins relatifs)
     plugins: [
+      tailwindcss(),
       react(),
       // On charge le plugin Electron avec DEUX entrées : Main + Preload
       isElectronOrBuild && electron([

@@ -1,6 +1,11 @@
 // electron/main.ts
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
+import { fileURLToPath } from 'url'
+
+// Équivalent de __dirname en ES modules
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // En mode dev et packagé: dist est toujours dans ../dist depuis dist-electron
 process.env.DIST = path.join(__dirname, '../dist')
@@ -13,8 +18,8 @@ const createWindow = () => {
     width: 800,
     height: 600,
     fullscreen: true, // IMPORTANT pour une borne : démarre en plein écran
-    frame: false,     // Enlève la barre de titre et les boutons fermer/réduire
-    kiosk: true,      // Mode kiosque strict (empêche de quitter facilement)
+    frame: true,     // FALSE Enlève la barre de titre et les boutons fermer/réduire
+    kiosk: false,      // TRUE Mode kiosque strict (empêche de quitter facilement)
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'), 
         nodeIntegration: true,
@@ -35,11 +40,6 @@ const createWindow = () => {
     const indexPath = path.join(process.env.DIST!, 'index.html')
     console.log('Loading file:', indexPath)
     win.loadFile(indexPath)
-  }
-
-  // Ouvrir automatiquement les DevTools en dev
-  if (!app.isPackaged) {
-    win.webContents.openDevTools()
   }
 }
 

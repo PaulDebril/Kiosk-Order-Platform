@@ -1,0 +1,192 @@
+import type { Product } from '../types';
+import type { Category } from '../types';
+
+export const categories: Category[] = [
+  { id: '1', name: 'Burgers', icon: 'burger' },
+  { id: '2', name: 'Chicken', icon: 'chicken' },
+  { id: '3', name: 'Sides', icon: 'fries' },
+  { id: '4', name: 'Drinks', icon: 'drink' },
+  { id: '5', name: 'Desserts', icon: 'dessert' },
+  { id: '6', name: 'Salads', icon: 'salad' },
+];
+
+export const products: Product[] = [
+  // Burgers
+  {
+    id: '1',
+    name: 'Classic Burger',
+    description: 'Beef patty, lettuce, tomato, pickles, onions, special sauce',
+    price: 8.99,
+    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop',
+    category: 'Burgers',
+    calories: 540,
+    popular: true,
+  },
+  {
+    id: '2',
+    name: 'Cheese Deluxe',
+    description: 'Double beef patty, double cheese, bacon, special sauce',
+    price: 11.99,
+    image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&h=300&fit=crop',
+    category: 'Burgers',
+    calories: 780,
+    popular: true,
+  },
+  {
+    id: '3',
+    name: 'Veggie Burger',
+    description: 'Plant-based patty, lettuce, tomato, avocado, vegan mayo',
+    price: 9.99,
+    image: 'https://images.unsplash.com/photo-1520072959219-c595dc870360?w=400&h=300&fit=crop',
+    category: 'Burgers',
+    calories: 420,
+  },
+  {
+    id: '4',
+    name: 'BBQ Bacon Burger',
+    description: 'Beef patty, crispy bacon, BBQ sauce, onion rings, cheddar',
+    price: 12.49,
+    image: 'https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=400&h=300&fit=crop',
+    category: 'Burgers',
+    calories: 850,
+  },
+
+  // Chicken
+  {
+    id: '5',
+    name: 'Crispy Chicken Sandwich',
+    description: 'Breaded chicken breast, lettuce, mayo, pickles',
+    price: 9.49,
+    image: 'https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=400&h=300&fit=crop',
+    category: 'Chicken',
+    calories: 620,
+    popular: true,
+  },
+  {
+    id: '6',
+    name: 'Chicken Nuggets (10pc)',
+    description: 'Golden crispy chicken nuggets with your choice of sauce',
+    price: 7.99,
+    image: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400&h=300&fit=crop',
+    category: 'Chicken',
+    calories: 480,
+  },
+  {
+    id: '7',
+    name: 'Spicy Chicken Wings',
+    description: '8 pieces of spicy chicken wings with ranch dip',
+    price: 10.99,
+    image: 'https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=400&h=300&fit=crop',
+    category: 'Chicken',
+    calories: 680,
+  },
+
+  // Sides
+  {
+    id: '8',
+    name: 'French Fries',
+    description: 'Crispy golden fries, lightly salted',
+    price: 3.49,
+    image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&h=300&fit=crop',
+    category: 'Sides',
+    calories: 320,
+    popular: true,
+  },
+  {
+    id: '9',
+    name: 'Onion Rings',
+    description: 'Crispy beer-battered onion rings',
+    price: 4.49,
+    image: 'https://images.unsplash.com/photo-1639024471283-03518883512d?w=400&h=300&fit=crop',
+    category: 'Sides',
+    calories: 380,
+  },
+  {
+    id: '10',
+    name: 'Mozzarella Sticks',
+    description: '6 pieces with marinara sauce',
+    price: 5.99,
+    image: 'https://images.unsplash.com/photo-1531749668029-2db88e4276c7?w=400&h=300&fit=crop',
+    category: 'Sides',
+    calories: 450,
+  },
+
+  // Drinks
+  {
+    id: '11',
+    name: 'Coca-Cola',
+    description: 'Large fountain drink',
+    price: 2.49,
+    image: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&h=300&fit=crop',
+    category: 'Drinks',
+    calories: 200,
+  },
+  {
+    id: '12',
+    name: 'Milkshake',
+    description: 'Vanilla, chocolate, or strawberry',
+    price: 4.99,
+    image: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&h=300&fit=crop',
+    category: 'Drinks',
+    calories: 520,
+    popular: true,
+  },
+  {
+    id: '13',
+    name: 'Orange Juice',
+    description: 'Freshly squeezed orange juice',
+    price: 3.99,
+    image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&h=300&fit=crop',
+    category: 'Drinks',
+    calories: 150,
+  },
+
+  // Desserts
+  {
+    id: '14',
+    name: 'Ice Cream Sundae',
+    description: 'Vanilla ice cream with chocolate sauce and whipped cream',
+    price: 4.49,
+    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop',
+    category: 'Desserts',
+    calories: 380,
+  },
+  {
+    id: '15',
+    name: 'Apple Pie',
+    description: 'Warm apple pie with cinnamon',
+    price: 3.99,
+    image: 'https://images.unsplash.com/photo-1535920527002-b35e96722eb9?w=400&h=300&fit=crop',
+    category: 'Desserts',
+    calories: 290,
+  },
+  {
+    id: '16',
+    name: 'Chocolate Chip Cookies',
+    description: '3 freshly baked cookies',
+    price: 2.99,
+    image: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=400&h=300&fit=crop',
+    category: 'Desserts',
+    calories: 420,
+  },
+
+  // Salads
+  {
+    id: '17',
+    name: 'Caesar Salad',
+    description: 'Romaine lettuce, parmesan, croutons, Caesar dressing',
+    price: 7.99,
+    image: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&h=300&fit=crop',
+    category: 'Salads',
+    calories: 280,
+  },
+  {
+    id: '18',
+    name: 'Garden Salad',
+    description: 'Mixed greens, tomatoes, cucumber, carrots, vinaigrette',
+    price: 6.99,
+    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop',
+    category: 'Salads',
+    calories: 180,
+  },
+];
