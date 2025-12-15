@@ -12,8 +12,16 @@ public class IngredientsController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll() => Ok(_service.GetAll());
+    public async Task<IActionResult> GetAll()
+    {
+        var ingredients = await _service.GetAllAsync();
+        return Ok(ingredients);
+    }
 
     [HttpPost]
-    public IActionResult Create(Ingredient i) => Ok(_service.Create(i));
+    public async Task<IActionResult> Create(Ingredient ingredient)
+    {
+        var created = await _service.CreateAsync(ingredient);
+        return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
+    }
 }

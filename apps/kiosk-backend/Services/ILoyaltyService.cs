@@ -1,9 +1,8 @@
 public interface ILoyaltyService
 {
-    LoyaltyAccount? GetByQrCode(string qr);
-    LoyaltyAccount? GetById(Guid id);
-    LoyaltyAccount Create(LoyaltyAccount acc);
-    LoyaltyAccount AddPoints(Guid id, decimal orderTotal);
-    LoyaltyAccount SpendPoints(Guid id, int points);
-    IEnumerable<LoyaltyTransaction> GetTransactions(Guid id);
+    Task<LoyaltyAccount?> GetAccountByNumberAsync(string loyaltyNumber);
+    Task<LoyaltyAccount> CreateAccountAsync(LoyaltyAccount account);
+    Task<bool> AddPointsAsync(Guid accountId, int points, string reason);
+    Task<bool> RedeemPointsAsync(Guid accountId, int points);
+    Task<List<LoyaltyTransaction>> GetTransactionsAsync(Guid accountId);
 }

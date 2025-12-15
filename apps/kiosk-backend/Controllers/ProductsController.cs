@@ -12,32 +12,40 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll() => Ok(_service.GetAll());
+    public async Task<IActionResult> GetAll()
+    {
+        var products = await _service.GetAllAsync();
+        return Ok(products);
+    }
 
     [HttpGet("{id}")]
-    public IActionResult GetById(Guid id)
+    public async Task<IActionResult> GetById(Guid id)
     {
-        var p = _service.GetById(id);
-        return p == null ? NotFound() : Ok(p);
+        var product = await _service.GetByIdAsync(id);
+        if (product == null) return NotFound();
+        return Ok(product);
     }
 
     [HttpPost]
-    public IActionResult Create(Product product)
+    public async Task<IActionResult> Create(Product product)
     {
-        var created = _service.Create(product);
+        var created = await _service.CreateAsync(product);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(Guid id, Product p)
+    public async Task<IActionResult> Update(Guid id, Product product)
     {
-        var updated = _service.Update(id, p);
-        return updated == null ? NotFound() : Ok(updated);
+        var success = await _service.UpdateAsync(id, product);
+        if (!success) return NotFound();
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
-        return _service.Delete(id) ? NoContent() : NotFound();
+        var success = await _service.DeleteAsync(id);
+        if (!success) return NotFound();
+        return NoContent();
     }
 }

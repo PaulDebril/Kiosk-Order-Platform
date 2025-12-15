@@ -11,32 +11,40 @@ public class LoyaltyController : ControllerBase
         _service = service;
     }
 
-    [HttpGet("scan/{qr}")]
-    public IActionResult Scan(string qr)
+    [HttpGet("qr/{qrCode}")]
+    public async Task<IActionResult> GetByQrCode(string qrCode)
     {
-        var acc = _service.GetByQrCode(qr);
-        return acc == null ? NotFound() : Ok(acc);
+        var account = await _service.GetAccountByNumberAsync(qrCode);
+        if (account == null) return NotFound();
+        
+        var transactions = await _service.GetTransactionsAsync(account.Id);
+        return Ok(new { account, transactions });
     }
 
-    [HttpGet("{id}/transactions")]
-    public IActionResult Transactions(Guid id) =>
-        Ok(_service.GetTransactions(id));
-
-    [HttpPost]
-    public IActionResult Create(LoyaltyAccount acc) =>
-        Ok(_service.Create(acc));
-
-    [HttpPost("{id}/addPoints")]
-    public IActionResult AddPoints(Guid id, [FromQuery] decimal total)
+    [HttpPost("register")]
+    public async Task<IActionResult> Create([FromBody] LoyaltyAccount account)
     {
-        var acc = _service.AddPoints(id, total);
-        return acc == null ? NotFound() : Ok(acc);
+        var created = await _service.CreateAccountAsync(account);
+        return Ok(created);
     }
 
-    [HttpPost("{id}/spend")]
-    public IActionResult Spend(Guid id, [FromQuery] int points)
+    [HttpPost("{accountId}/points")]
+    public async Task<IActionResult> AddPoints(Guid accountId, [FromBody] AddPointsRequest request)
     {
-        var acc = _service.SpendPoints(id, points);
-        return acc == null ? NotFound() : Ok(acc);
+        var points = (int)(request.Amount * 10);
+        var success = await _service.AddPointsAsync(accountId, points, "Commande");
+        if (!success) return NotFound();
+        return Ok();
+    }
+
+    [HttpPost("{accountId}/redeem")]
+    public async Task<IActionResult> RedeemPoints(Guid accountId, [FromBody] RedeemPointsRequest request)
+    {
+        var success = await _service.RedeemPointsAsync(accountId, request.Points);
+        if (!success) return BadRequest("Points insuffisants ou compte introuvable");
+        return Ok();
     }
 }
+
+public record AddPointsRequest(decimal Amount);
+public record RedeemPointsRequest(int Points);

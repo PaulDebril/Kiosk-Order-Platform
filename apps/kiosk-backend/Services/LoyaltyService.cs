@@ -1,62 +1,79 @@
+using Microsoft.EntityFrameworkCore;
+
 public class LoyaltyService : ILoyaltyService
 {
-    private readonly FakeDb _db;
+    private readonly ApplicationDbContext _context;
 
-    public LoyaltyService(FakeDb db)
+    public LoyaltyService(ApplicationDbContext context)
     {
-        _db = db;
+        _context = context;
     }
 
-    public LoyaltyAccount? GetByQrCode(string qr) =>
-        _db.LoyaltyAccounts.FirstOrDefault(a => a.LoyaltyNumber == qr);
-
-    public LoyaltyAccount? GetById(Guid id) =>
-        _db.LoyaltyAccounts.FirstOrDefault(a => a.Id == id);
-
-    public LoyaltyAccount Create(LoyaltyAccount acc)
+    public async Task<LoyaltyAccount?> GetAccountByNumberAsync(string loyaltyNumber)
     {
-        acc.Id = Guid.NewGuid();
-        acc.LoyaltyNumber = $"QR-{acc.Id.ToString().Substring(0, 6).ToUpper()}";
-        _db.LoyaltyAccounts.Add(acc);
-        return acc;
+        return await _context.LoyaltyAccounts
+            .FirstOrDefaultAsync(la => la.LoyaltyNumber == loyaltyNumber);
     }
 
-    public LoyaltyAccount AddPoints(Guid id, decimal total)
+    public async Task<LoyaltyAccount> CreateAccountAsync(LoyaltyAccount account)
     {
-        var acc = GetById(id);
-        if (acc == null) return null;
+        account.Id = Guid.NewGuid();
+        account.LoyaltyNumber = $"QR-{Guid.NewGuid().ToString().Substring(0, 8).ToUpper()}";
+        account.Points = 0;
+        account.OrderHistory = new List<Guid>();
 
-        int points = (int)(total * _db.LoyaltyRule.PointsPerEuro);
+        _context.LoyaltyAccounts.Add(account);
+        await _context.SaveChangesAsync();
+        return account;
+    }
 
-        acc.Points += points;
+    public async Task<bool> AddPointsAsync(Guid accountId, int points, string reason)
+    {
+        var account = await _context.LoyaltyAccounts.FindAsync(accountId);
+        if (account == null) return false;
 
-        _db.LoyaltyTransactions.Add(new LoyaltyTransaction
+        account.Points += points;
+
+        var transaction = new LoyaltyTransaction
         {
-            AccountId = acc.Id,
+            Id = Guid.NewGuid(),
+            AccountId = accountId,
             PointsChanged = points,
-            Reason = "Commande",
-        });
+            Reason = reason,
+            Date = DateTime.UtcNow
+        };
 
-        return acc;
+        _context.LoyaltyTransactions.Add(transaction);
+        await _context.SaveChangesAsync();
+        return true;
     }
 
-    public LoyaltyAccount SpendPoints(Guid id, int points)
+    public async Task<bool> RedeemPointsAsync(Guid accountId, int points)
     {
-        var acc = GetById(id);
-        if (acc == null) return null;
+        var account = await _context.LoyaltyAccounts.FindAsync(accountId);
+        if (account == null || account.Points < points) return false;
 
-        acc.Points -= points;
+        account.Points -= points;
 
-        _db.LoyaltyTransactions.Add(new LoyaltyTransaction
+        var transaction = new LoyaltyTransaction
         {
-            AccountId = acc.Id,
+            Id = Guid.NewGuid(),
+            AccountId = accountId,
             PointsChanged = -points,
-            Reason = "Dépense de points",
-        });
+            Reason = "Rédemption",
+            Date = DateTime.UtcNow
+        };
 
-        return acc;
+        _context.LoyaltyTransactions.Add(transaction);
+        await _context.SaveChangesAsync();
+        return true;
     }
 
-    public IEnumerable<LoyaltyTransaction> GetTransactions(Guid id) =>
-        _db.LoyaltyTransactions.Where(t => t.AccountId == id);
+    public async Task<List<LoyaltyTransaction>> GetTransactionsAsync(Guid accountId)
+    {
+        return await _context.LoyaltyTransactions
+            .Where(lt => lt.AccountId == accountId)
+            .OrderByDescending(lt => lt.Date)
+            .ToListAsync();
+    }
 }

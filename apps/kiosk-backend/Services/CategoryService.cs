@@ -1,18 +1,49 @@
+using Microsoft.EntityFrameworkCore;
+
 public class CategoryService : ICategoryService
 {
-    private readonly FakeDb _db;
+    private readonly ApplicationDbContext _context;
 
-    public CategoryService(FakeDb db)
+    public CategoryService(ApplicationDbContext context)
     {
-        _db = db;
+        _context = context;
     }
 
-    public IEnumerable<Category> GetAll() => _db.Categories;
-
-    public Category Create(Category c)
+    public async Task<List<Category>> GetAllAsync()
     {
-        c.Id = Guid.NewGuid();
-        _db.Categories.Add(c);
-        return c;
+        return await _context.Categories.ToListAsync();
+    }
+
+    public async Task<Category?> GetByIdAsync(Guid id)
+    {
+        return await _context.Categories.FindAsync(id);
+    }
+
+    public async Task<Category> CreateAsync(Category category)
+    {
+        category.Id = Guid.NewGuid();
+        _context.Categories.Add(category);
+        await _context.SaveChangesAsync();
+        return category;
+    }
+
+    public async Task<bool> UpdateAsync(Guid id, Category category)
+    {
+        var existing = await _context.Categories.FindAsync(id);
+        if (existing == null) return false;
+
+        existing.Name = category.Name;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        var category = await _context.Categories.FindAsync(id);
+        if (category == null) return false;
+
+        _context.Categories.Remove(category);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

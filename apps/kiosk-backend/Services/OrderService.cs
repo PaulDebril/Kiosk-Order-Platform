@@ -1,67 +1,56 @@
+using Microsoft.EntityFrameworkCore;
+
 public class OrderService : IOrderService
 {
-    private readonly FakeDb _db;
-    private readonly ILoyaltyService _loyaltyService;
+    private readonly ApplicationDbContext _context;
 
-    public OrderService(FakeDb db, ILoyaltyService loyaltyService)
+    public OrderService(ApplicationDbContext context)
     {
-        _db = db;
-        _loyaltyService = loyaltyService;
+        _context = context;
     }
 
-    public IEnumerable<Order> GetAll() => _db.Orders;
-
-    public Order? GetById(Guid id) =>
-        _db.Orders.FirstOrDefault(o => o.Id == id);
-
-    public Order Create(Order o)
+    public async Task<List<Order>> GetAllAsync()
     {
-        o.Id = Guid.NewGuid();
-        o.CreatedAt = DateTime.UtcNow;
+        return await _context.Orders
+            .Include(o => o.Items)
+            .OrderByDescending(o => o.CreatedAt)
+            .ToListAsync();
+    }
 
-        decimal total = 0;
+    public async Task<Order?> GetByIdAsync(Guid id)
+    {
+        return await _context.Orders
+            .Include(o => o.Items)
+            .FirstOrDefaultAsync(o => o.Id == id);
+    }
 
-        foreach (var item in o.Items)
-        {
-            var product = _db.Products.FirstOrDefault(p => p.Id == item.ProductId);
-            if (product == null) continue;
+    public async Task<Order> CreateAsync(Order order)
+    {
+        order.Id = Guid.NewGuid();
+        order.CreatedAt = DateTime.UtcNow;
+        
+        _context.Orders.Add(order);
+        await _context.SaveChangesAsync();
+        return order;
+    }
 
-            decimal price = product.BasePrice;
+    public async Task<bool> UpdateStatusAsync(Guid id, string status)
+    {
+        var order = await _context.Orders.FindAsync(id);
+        if (order == null) return false;
 
-            if (item.ExtraIds != null)
-            {
-                foreach (var extraId in item.ExtraIds)
-                {
-                    var extra = _db.Extras.FirstOrDefault(e => e.Id == extraId);
-                    if (extra != null)
-                        price += extra.Price;
-                }
-            }
+        // Ajouter une propriété Status si nécessaire
+        await _context.SaveChangesAsync();
+        return true;
+    }
 
-            if (item.SelectedOptions != null)
-            {
-                foreach (var opt in item.SelectedOptions)
-                    price += opt.AdditionalPrice;
-            }
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        var order = await _context.Orders.FindAsync(id);
+        if (order == null) return false;
 
-            total += price * item.Quantity;
-        }
-
-        o.TotalPrice = total;
-
-        _db.Orders.Add(o);
-
-        if (o.LoyaltyAccountId != null)
-        {
-            var acc = _loyaltyService.GetById(o.LoyaltyAccountId.Value);
-
-            if (acc != null)
-            {
-                acc.OrderHistory.Add(o.Id);
-                _loyaltyService.AddPoints(acc.Id, total);
-            }
-        }
-
-        return o;
+        _context.Orders.Remove(order);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

@@ -1,43 +1,62 @@
+using Microsoft.EntityFrameworkCore;
+
 public class ProductService : IProductService
 {
-    private readonly FakeDb _db;
+    private readonly ApplicationDbContext _context;
 
-    public ProductService(FakeDb db)
+    public ProductService(ApplicationDbContext context)
     {
-        _db = db;
+        _context = context;
     }
 
-    public IEnumerable<Product> GetAll() => _db.Products;
-
-    public Product? GetById(Guid id) =>
-        _db.Products.FirstOrDefault(p => p.Id == id);
-
-    public Product Create(Product p)
+    public async Task<List<Product>> GetAllAsync()
     {
-        p.Id = Guid.NewGuid();
-        _db.Products.Add(p);
-        return p;
+        return await _context.Products.ToListAsync();
     }
 
-    public Product? Update(Guid id, Product p)
+    public async Task<List<Product>> GetByCategoryAsync(Guid categoryId)
     {
-        var existing = GetById(id);
-        if (existing == null) return null;
-
-        existing.Name = p.Name;
-        existing.Description = p.Description;
-        existing.BasePrice = p.BasePrice;
-        existing.CategoryId = p.CategoryId;
-        existing.Ingredients = p.Ingredients;
-        existing.Options = p.Options;
-        existing.ExtraIds = p.ExtraIds;
-
-        return existing;
+        return await _context.Products
+            .Where(p => p.CategoryId == categoryId)
+            .ToListAsync();
     }
 
-    public bool Delete(Guid id)
+    public async Task<Product?> GetByIdAsync(Guid id)
     {
-        var product = GetById(id);
-        return product != null && _db.Products.Remove(product);
+        return await _context.Products.FindAsync(id);
+    }
+
+    public async Task<Product> CreateAsync(Product product)
+    {
+        product.Id = Guid.NewGuid();
+        _context.Products.Add(product);
+        await _context.SaveChangesAsync();
+        return product;
+    }
+
+    public async Task<bool> UpdateAsync(Guid id, Product product)
+    {
+        var existing = await _context.Products.FindAsync(id);
+        if (existing == null) return false;
+
+        existing.Name = product.Name;
+        existing.BasePrice = product.BasePrice;
+        existing.CategoryId = product.CategoryId;
+        existing.Ingredients = product.Ingredients;
+        existing.ExtraIds = product.ExtraIds;
+        existing.Options = product.Options;
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        var product = await _context.Products.FindAsync(id);
+        if (product == null) return false;
+
+        _context.Products.Remove(product);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

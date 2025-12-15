@@ -1,6 +1,8 @@
 public interface IMenuService
 {
-    IEnumerable<Menu> GetAll();
-    Menu? GetById(Guid id);
-    Menu Create(Menu m);
+    Task<List<Menu>> GetAllAsync();
+    Task<Menu?> GetByIdAsync(Guid id);
+    Task<Menu> CreateAsync(Menu menu);
+    Task<bool> UpdateAsync(Guid id, Menu menu);
+    Task<bool> DeleteAsync(Guid id);
 }

@@ -1,6 +1,8 @@
 public interface IOrderService
 {
-    IEnumerable<Order> GetAll();
-    Order? GetById(Guid id);
-    Order Create(Order o);
+    Task<List<Order>> GetAllAsync();
+    Task<Order?> GetByIdAsync(Guid id);
+    Task<Order> CreateAsync(Order order);
+    Task<bool> UpdateStatusAsync(Guid id, string status);
+    Task<bool> DeleteAsync(Guid id);
 }

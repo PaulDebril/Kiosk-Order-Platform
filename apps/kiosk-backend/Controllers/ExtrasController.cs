@@ -12,8 +12,16 @@ public class ExtrasController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll() => Ok(_service.GetAll());
+    public async Task<IActionResult> GetAll()
+    {
+        var extras = await _service.GetAllAsync();
+        return Ok(extras);
+    }
 
     [HttpPost]
-    public IActionResult Create(Extra e) => Ok(_service.Create(e));
+    public async Task<IActionResult> Create(Extra extra)
+    {
+        var created = await _service.CreateAsync(extra);
+        return CreatedAtAction(nameof(GetAll), new { id = created.Id }, created);
+    }
 }

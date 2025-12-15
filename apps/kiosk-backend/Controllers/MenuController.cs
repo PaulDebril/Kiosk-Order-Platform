@@ -12,15 +12,24 @@ public class MenusController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll() => Ok(_service.GetAll());
+    public async Task<IActionResult> GetAll()
+    {
+        var menus = await _service.GetAllAsync();
+        return Ok(menus);
+    }
 
     [HttpGet("{id}")]
-    public IActionResult GetById(Guid id)
+    public async Task<IActionResult> GetById(Guid id)
     {
-        var m = _service.GetById(id);
-        return m == null ? NotFound() : Ok(m);
+        var menu = await _service.GetByIdAsync(id);
+        if (menu == null) return NotFound();
+        return Ok(menu);
     }
 
     [HttpPost]
-    public IActionResult Create(Menu m) => Ok(_service.Create(m));
+    public async Task<IActionResult> Create(Menu menu)
+    {
+        var created = await _service.CreateAsync(menu);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
 }
