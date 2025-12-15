@@ -6,10 +6,12 @@ public class FakeDb
     public List<Extra> Extras { get; set; } = new();
     public List<Menu> Menus { get; set; } = new();
     public List<Order> Orders { get; set; } = new();
+    public List<LoyaltyAccount> LoyaltyAccounts { get; set; } = new();
+    public List<LoyaltyTransaction> LoyaltyTransactions { get; set; } = new();
+    public LoyaltyRewardRule LoyaltyRule { get; set; } = new LoyaltyRewardRule();
 
     public FakeDb()
     {
-
         Ingredient ING(string name) =>
             new Ingredient { Id = Guid.NewGuid(), Name = name };
 
@@ -18,7 +20,6 @@ public class FakeDb
 
         Extra EX(string name, decimal price) =>
             new Extra { Id = Guid.NewGuid(), Name = name, Price = price };
-
 
         var ingSteak = ING("Steak");
         var ingChicken = ING("Poulet croustillant");
@@ -30,13 +31,10 @@ public class FakeDb
 
         Ingredients.AddRange(new[]
         {
-            ingSteak, ingChicken, ingLettuce, ingTomato, ingOnion,
-            ingCheddar, ingSauceBurger
+            ingSteak, ingChicken, ingLettuce, ingTomato,
+            ingOnion, ingCheddar, ingSauceBurger
         });
 
-        //---------------------------
-        // CATEGORIES
-        //---------------------------
         var catBurger = CAT("Burgers");
         var catDrink = CAT("Boissons");
         var catSide = CAT("Accompagnements");
@@ -46,7 +44,6 @@ public class FakeDb
         {
             catBurger, catDrink, catSide, catDessert
         });
-
 
         var exCheddar = EX("Cheddar Supplément", 1.00m);
         var exBacon = EX("Bacon", 1.50m);
@@ -73,7 +70,6 @@ public class FakeDb
                 new OptionChoice { Label = "Sans glaçons", AdditionalPrice = 0 }
             }
         };
-
 
         Product BURGER(string name, decimal price, params Ingredient[] ings) =>
             new Product
@@ -130,8 +126,7 @@ public class FakeDb
             bigBurger, chickenBurger, fries, coke, sprite, sundae
         });
 
-
-        var menuBigBurger = new Menu
+        Menus.Add(new Menu
         {
             Id = Guid.NewGuid(),
             Title = "Menu Big Burger",
@@ -139,13 +134,22 @@ public class FakeDb
             MainProductId = bigBurger.Id,
             DrinkProductId = coke.Id,
             SideProductId = fries.Id
+        });
+
+        var accMarine = new LoyaltyAccount
+        {
+            Id = Guid.NewGuid(),
+            FullName = "Marine L",
+            Email = "marine@example.com",
+            PhoneNumber = "0612345678",
+            LoyaltyNumber = "QR-MARINE-001",
+            Points = 320,
+            OrderHistory = new()
         };
 
-        Menus.Add(menuBigBurger);
+        LoyaltyAccounts.Add(accMarine);
 
-
-
-        Orders.Add(new Order
+        var order1 = new Order
         {
             Id = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow.AddMinutes(-10),
@@ -156,8 +160,7 @@ public class FakeDb
                     ProductId = bigBurger.Id,
                     Quantity = 1,
                     RemovedIngredients = new List<Guid> { ingOnion.Id },
-                    ExtraIds = new List<Guid> { exCheddar.Id },
-                    SelectedOptions = null
+                    ExtraIds = new List<Guid> { exCheddar.Id }
                 },
                 new OrderItem
                 {
@@ -169,7 +172,23 @@ public class FakeDb
                         new OptionChoice { Label = "Sans glaçons", AdditionalPrice = 0 }
                     }
                 }
-            }
+            },
+            TotalPrice = 12.50m
+        };
+
+        Orders.Add(order1);
+
+        accMarine.OrderHistory.Add(order1.Id);
+
+        LoyaltyTransactions.Add(new LoyaltyTransaction
+        {
+            Id = Guid.NewGuid(),
+            AccountId = accMarine.Id,
+            PointsChanged = 45,
+            Reason = "Commande",
+            Date = DateTime.UtcNow.AddMinutes(-9)
         });
+
+        accMarine.Points += 45;
     }
 }

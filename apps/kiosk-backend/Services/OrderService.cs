@@ -1,10 +1,12 @@
 public class OrderService : IOrderService
 {
     private readonly FakeDb _db;
+    private readonly ILoyaltyService _loyaltyService;
 
-    public OrderService(FakeDb db)
+    public OrderService(FakeDb db, ILoyaltyService loyaltyService)
     {
         _db = db;
+        _loyaltyService = loyaltyService;
     }
 
     public IEnumerable<Order> GetAll() => _db.Orders;
@@ -17,7 +19,6 @@ public class OrderService : IOrderService
         o.Id = Guid.NewGuid();
         o.CreatedAt = DateTime.UtcNow;
 
-        // CALCUL DU PRIX TOTAL
         decimal total = 0;
 
         foreach (var item in o.Items)
@@ -27,7 +28,6 @@ public class OrderService : IOrderService
 
             decimal price = product.BasePrice;
 
-            // Extras (sauces, add-ons)
             if (item.ExtraIds != null)
             {
                 foreach (var extraId in item.ExtraIds)
@@ -38,7 +38,6 @@ public class OrderService : IOrderService
                 }
             }
 
-            // Options (taille boisson, glaces…)
             if (item.SelectedOptions != null)
             {
                 foreach (var opt in item.SelectedOptions)
@@ -51,6 +50,18 @@ public class OrderService : IOrderService
         o.TotalPrice = total;
 
         _db.Orders.Add(o);
+
+        if (o.LoyaltyAccountId != null)
+        {
+            var acc = _loyaltyService.GetById(o.LoyaltyAccountId.Value);
+
+            if (acc != null)
+            {
+                acc.OrderHistory.Add(o.Id);
+                _loyaltyService.AddPoints(acc.Id, total);
+            }
+        }
+
         return o;
     }
 }
