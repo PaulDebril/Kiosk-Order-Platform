@@ -1,8 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap');
 @import "tailwindcss";
 
 @layer base {
   body {
-    @apply m-0 font-sans antialiased;
+    @apply m-0 font-sans antialiased bg-stone-900 text-stone-100;
   }
 }
 
@@ -27,7 +28,11 @@
 
 @layer components {
   .shadow-3xl {
-    box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.5);
+  }
+
+  .glass-panel {
+    @apply bg-stone-900/80 backdrop-blur-md border border-stone-700/50;
   }
 }
 
@@ -36,6 +41,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

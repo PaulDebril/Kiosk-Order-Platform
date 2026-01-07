@@ -1,34 +1,41 @@
-import { app as e, BrowserWindow as i } from "electron";
-import o from "path";
-import { fileURLToPath as a } from "url";
-const l = a(import.meta.url), n = o.dirname(l);
-process.env.DIST = o.join(n, "../dist");
-process.env.VITE_PUBLIC = e.isPackaged ? process.env.DIST : o.join(n, "../public");
-let s;
-const c = () => {
-  if (s = new i({
+import { app, BrowserWindow } from "electron";
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename$1 = fileURLToPath(import.meta.url);
+const __dirname$1 = path.dirname(__filename$1);
+process.env.DIST = path.join(__dirname$1, "../dist");
+process.env.VITE_PUBLIC = app.isPackaged ? process.env.DIST : path.join(__dirname$1, "../public");
+let win;
+const createWindow = () => {
+  win = new BrowserWindow({
     width: 800,
     height: 600,
-    fullscreen: !0,
+    fullscreen: true,
     // IMPORTANT pour une borne : démarre en plein écran
-    frame: !0,
+    frame: true,
     // FALSE Enlève la barre de titre et les boutons fermer/réduire
-    kiosk: !1,
+    kiosk: false,
     // TRUE Mode kiosque strict (empêche de quitter facilement)
     webPreferences: {
-      preload: o.join(n, "preload.js"),
-      nodeIntegration: !0,
-      contextIsolation: !1
+      preload: path.join(__dirname$1, "preload.js"),
+      nodeIntegration: true,
+      contextIsolation: false
     }
-  }), console.log("__dirname:", n), console.log("process.env.DIST:", process.env.DIST), console.log("app.isPackaged:", e.isPackaged), console.log("process.resourcesPath:", process.resourcesPath), process.env.VITE_DEV_SERVER_URL)
-    s.loadURL(process.env.VITE_DEV_SERVER_URL), console.log("Loading dev server:", process.env.VITE_DEV_SERVER_URL);
-  else {
-    const r = o.join(process.env.DIST, "index.html");
-    console.log("Loading file:", r), s.loadFile(r);
+  });
+  console.log("__dirname:", __dirname$1);
+  console.log("process.env.DIST:", process.env.DIST);
+  console.log("app.isPackaged:", app.isPackaged);
+  console.log("process.resourcesPath:", process.resourcesPath);
+  if (process.env.VITE_DEV_SERVER_URL) {
+    win.loadURL(process.env.VITE_DEV_SERVER_URL);
+    console.log("Loading dev server:", process.env.VITE_DEV_SERVER_URL);
+  } else {
+    const indexPath = path.join(process.env.DIST, "index.html");
+    console.log("Loading file:", indexPath);
+    win.loadFile(indexPath);
   }
-  e.isPackaged || s.webContents.openDevTools();
 };
-e.on("window-all-closed", () => {
-  process.platform !== "darwin" && e.quit();
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") app.quit();
 });
-e.whenReady().then(c);
+app.whenReady().then(createWindow);

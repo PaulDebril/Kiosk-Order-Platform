@@ -1,12 +1,14 @@
 import React from 'react';
-import { 
-  GiHamburger, 
-  GiChickenOven, 
-  GiFrenchFries, 
+import {
+  GiSushis,
+  GiFlatfish,
+  GiNoodles,
+  GiShrimp,
   GiSodaCan,
-  GiIceCreamCone
+  GiIceCreamCone,
+  GiMeat,
+  GiChopsticks
 } from 'react-icons/gi';
-import { IoLeafOutline } from 'react-icons/io5';
 
 interface CategoryIconProps {
   icon: string;
@@ -15,13 +17,15 @@ interface CategoryIconProps {
 
 export const CategoryIcon: React.FC<CategoryIconProps> = ({ icon, className = "w-8 h-8" }) => {
   const iconMap: Record<string, React.ReactElement> = {
-    burger: <GiHamburger className={className} />,
-    chicken: <GiChickenOven className={className} />,
-    fries: <GiFrenchFries className={className} />,
+    sushi: <GiSushis className={className} />,
+    maki: <GiChopsticks className={className} />,
+    fish: <GiFlatfish className={className} />,
+    ramen: <GiNoodles className={className} />,
+    kebab: <GiMeat className={className} />, // Pour Yakitori
     drink: <GiSodaCan className={className} />,
     dessert: <GiIceCreamCone className={className} />,
-    salad: <IoLeafOutline className={className} />,
+    shrimp: <GiShrimp className={className} />,
   };
 
-  return iconMap[icon] || <GiHamburger className={className} />;
+  return iconMap[icon] || <GiSushis className={className} />;
 };
