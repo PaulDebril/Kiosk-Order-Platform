@@ -29,7 +29,7 @@ export const CheckoutPage: React.FC = () => {
       clearCart();
       const orderNumber = order.orderNumber;
       // Pour l'instant on passe just les infos, le service a déjà créé l'ordre côté "backend"
-      navigate('/confirmation', { state: { orderNumber, total, paymentMethod: 'cash' } });
+      navigate('/confirmation', { state: { orderNumber, total, paymentMethod: 'cash', items: state.items } });
     } catch (error) {
       console.error("Order failed", error);
       setIsProcessing(false);

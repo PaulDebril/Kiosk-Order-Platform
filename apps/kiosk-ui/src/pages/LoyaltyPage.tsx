@@ -40,7 +40,7 @@ export const LoyaltyPage: React.FC = () => {
             <h2 className="text-primary-500 font-bold uppercase tracking-widest mb-4">Programme Fidélité</h2>
             <h1 className="text-6xl font-serif font-black mb-6 leading-tight">
               Bienvenue chez<br />
-              <span className="text-white">ZEN</span><span className="text-primary-500">SUSHI</span>
+              <span className="text-white">ZEN</span><span className="text-primary-500">ITO</span>
             </h1>
             <p className="text-stone-400 text-xl font-light leading-relaxed max-w-lg">
               Identifiez-vous pour cumuler des points et profiter de récompenses exclusives sur votre commande.

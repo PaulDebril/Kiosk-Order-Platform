@@ -16,7 +16,7 @@ export const MenuPage: React.FC = () => {
     const loadData = async () => {
       try {
         setIsLoading(true);
-        // Chargement parallèle des catégories et produits
+        // On récupère les catégories et les produits en même temps pour gagner du temps
         const [cats, prods] = await Promise.all([
           productService.getCategories(),
           productService.getAllProducts()
@@ -25,7 +25,7 @@ export const MenuPage: React.FC = () => {
         setCategories(cats);
         setProducts(prods);
 
-        // Sélectionner la première catégorie par défaut
+        // Par défaut, on affiche la première catégorie de la liste
         if (cats.length > 0 && !activeCategory) {
           setActiveCategory(cats[0].id);
         }
@@ -39,6 +39,7 @@ export const MenuPage: React.FC = () => {
     loadData();
   }, []);
 
+  // On filtre les produits pour ne garder que ceux de la catégorie sélectionnée
   const filteredProducts = useMemo(() => {
     if (!activeCategory) return [];
     const category = categories.find((cat) => cat.id === activeCategory);
@@ -47,6 +48,7 @@ export const MenuPage: React.FC = () => {
 
   const activeCategoryName = categories.find((cat) => cat.id === activeCategory)?.name;
 
+  // Petit écran de chargement sympa en attendant les données
   if (isLoading) {
     return (
       <div className="min-h-screen bg-stone-950 flex items-center justify-center">
@@ -60,16 +62,16 @@ export const MenuPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-stone-950">
-      {/* Sidebar Navigation */}
+      {/* Navigation latérale pour les catégories */}
       <CategoryNav
         categories={categories}
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
       />
 
-      {/* Main Content with left margin for sidebar */}
+      {/* Contenu principal (avec une marge à gauche pour laisser de la place à la sidebar) */}
       <div className="ml-32 pb-32">
-        {/* Header Banner - Zen Theme */}
+        {/* Bandeau d'en-tête style Zen */}
         <div className="bg-stone-900 border-b border-stone-800 shadow-md relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
           <div className="max-w-7xl mx-auto px-12 py-12 relative z-10">
@@ -86,7 +88,7 @@ export const MenuPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Products Grid */}
+        {/* Grille des produits */}
         <div className="max-w-7xl mx-auto px-12 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {filteredProducts.map((product) => (
@@ -94,6 +96,7 @@ export const MenuPage: React.FC = () => {
             ))}
           </div>
 
+          {/* Si la catégorie est vide, on affiche un petit message */}
           {filteredProducts.length === 0 && (
             <div className="text-center py-32 flex flex-col items-center">
               <div className="w-24 h-24 bg-stone-800 rounded-full flex items-center justify-center mb-6 animate-pulse">
@@ -110,8 +113,9 @@ export const MenuPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Cart Summary */}
+      {/* Résumé du panier en bas de l'écran */}
       <CartSummary />
     </div>
   );
 };
+

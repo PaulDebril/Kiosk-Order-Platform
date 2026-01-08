@@ -20,7 +20,7 @@ export const StartScreen: React.FC = () => {
       {/* Restaurant Title - Center */}
       <div className="absolute inset-0 flex flex-col items-center justify-center mb-32">
         <h1 className="text-9xl font-black text-white tracking-tighter drop-shadow-2xl font-serif">
-          ZEN<span className="text-primary-500">SUSHI</span>
+          ZEN<span className="text-primary-500">ITO</span>
         </h1>
         <div className="h-1 w-32 bg-primary-500 my-6 rounded-full" />
         <p className="text-3xl text-stone-200 font-light tracking-[0.5em] uppercase text-shadow-lg">

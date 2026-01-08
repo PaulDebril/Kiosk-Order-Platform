@@ -31,8 +31,9 @@ export const PaymentPage: React.FC = () => {
 
                 // Attente courte sur l'écran succès avant redirection
                 setTimeout(() => {
+                    const itemsToPass = state.items; // Capture items before clearing
                     clearCart();
-                    navigate('/confirmation', { state: { orderNumber: order.orderNumber, total, paymentMethod: 'card' } });
+                    navigate('/confirmation', { state: { orderNumber: order.orderNumber, total, paymentMethod: 'card', items: itemsToPass } });
                 }, 1500);
             } catch (error) {
                 console.error("Payment failed", error);
