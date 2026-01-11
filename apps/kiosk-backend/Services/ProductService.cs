@@ -11,19 +11,37 @@ public class ProductService : IProductService
 
     public async Task<List<Product>> GetAllAsync()
     {
-        return await _context.Products.ToListAsync();
+        var products = await _context.Products
+            .Include(p => p.Category)
+            .ToListAsync();
+            
+        // Populate mapped property
+        products.ForEach(p => p.CategoryName = p.Category?.Name ?? "");
+        return products;
     }
 
     public async Task<List<Product>> GetByCategoryAsync(Guid categoryId)
     {
-        return await _context.Products
+        var products = await _context.Products
+            .Include(p => p.Category)
             .Where(p => p.CategoryId == categoryId)
             .ToListAsync();
+            
+        products.ForEach(p => p.CategoryName = p.Category?.Name ?? "");
+        return products;
     }
 
     public async Task<Product?> GetByIdAsync(Guid id)
     {
-        return await _context.Products.FindAsync(id);
+        var product = await _context.Products
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.Id == id);
+            
+        if (product != null)
+        {
+            product.CategoryName = product.Category?.Name ?? "";
+        }
+        return product;
     }
 
     public async Task<Product> CreateAsync(Product product)
@@ -40,8 +58,12 @@ public class ProductService : IProductService
         if (existing == null) return false;
 
         existing.Name = product.Name;
-        existing.BasePrice = product.BasePrice;
+        existing.Description = product.Description;
+        existing.Price = product.Price;
+        existing.Image = product.Image;
         existing.CategoryId = product.CategoryId;
+        existing.Calories = product.Calories;
+        existing.IsPopular = product.IsPopular;
         existing.Ingredients = product.Ingredients;
         existing.ExtraIds = product.ExtraIds;
         existing.Options = product.Options;
@@ -60,3 +82,4 @@ public class ProductService : IProductService
         return true;
     }
 }
+

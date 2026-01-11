@@ -42,9 +42,9 @@ export const MenuPage: React.FC = () => {
   // On filtre les produits pour ne garder que ceux de la catégorie sélectionnée
   const filteredProducts = useMemo(() => {
     if (!activeCategory) return [];
-    const category = categories.find((cat) => cat.id === activeCategory);
-    return products.filter((product) => product.category === category?.name);
-  }, [activeCategory, categories, products]);
+    return products.filter((product) => product.categoryId === activeCategory);
+  }, [activeCategory, products]);
+
 
   const activeCategoryName = categories.find((cat) => cat.id === activeCategory)?.name;
 

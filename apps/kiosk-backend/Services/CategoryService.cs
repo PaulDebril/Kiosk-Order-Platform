@@ -33,9 +33,11 @@ public class CategoryService : ICategoryService
         if (existing == null) return false;
 
         existing.Name = category.Name;
+        existing.Icon = category.Icon;
         await _context.SaveChangesAsync();
         return true;
     }
+
 
     public async Task<bool> DeleteAsync(Guid id)
     {

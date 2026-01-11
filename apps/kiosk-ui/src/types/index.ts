@@ -20,11 +20,13 @@ export interface Product {
   price: number;
   image: string;
   category: string;
+  categoryId?: string; // ID de la catégorie pour le filtrage robuste
   calories?: number;
   popular?: boolean;
   ingredients?: string[];
   optionGroups?: ProductOptionGroup[];
 }
+
 
 export interface Category {
   id: string;

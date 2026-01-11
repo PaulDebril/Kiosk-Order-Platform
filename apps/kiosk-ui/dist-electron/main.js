@@ -1,95 +1,78 @@
-import { app, ipcMain, BrowserWindow } from "electron";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs";
-import os from "os";
-const __filename$1 = fileURLToPath(import.meta.url);
-const __dirname$1 = path.dirname(__filename$1);
-process.env.DIST = path.join(__dirname$1, "../dist");
-process.env.VITE_PUBLIC = app.isPackaged ? process.env.DIST : path.join(__dirname$1, "../public");
-let win;
-const createWindow = () => {
-  win = new BrowserWindow({
+import { app as a, ipcMain as y, BrowserWindow as c } from "electron";
+import n from "path";
+import { fileURLToPath as T } from "url";
+import I from "fs";
+import E from "os";
+const P = T(import.meta.url), l = n.dirname(P);
+process.env.DIST = n.join(l, "../dist");
+process.env.VITE_PUBLIC = a.isPackaged ? process.env.DIST : n.join(l, "../public");
+let i;
+const R = () => {
+  if (i = new c({
     width: 800,
     height: 600,
-    fullscreen: true,
-    // IMPORTANT pour une borne : démarre en plein écran
-    frame: false,
-    // FALSE Enlève la barre de titre et les boutons fermer/réduire (Kiosk Mode Visual)
-    kiosk: true,
-    // TRUE Mode kiosque strict (empêche de quitter facilement)
+    fullscreen: !0,
+    // Pour une borne, on veut direct le plein écran
+    frame: !1,
+    // On vire la barre de titre pour faire plus "borne de commande"
+    kiosk: !0,
+    // On verrouille tout en mode kiosque strict
     webPreferences: {
-      preload: path.join(__dirname$1, "preload.js"),
-      nodeIntegration: true,
-      contextIsolation: false,
-      webSecurity: false
+      preload: n.join(l, "preload.js"),
+      nodeIntegration: !0,
+      contextIsolation: !1,
+      webSecurity: !1
     }
-  });
-  win.setMenu(null);
-  console.log("__dirname:", __dirname$1);
-  console.log("process.env.DIST:", process.env.DIST);
-  console.log("app.isPackaged:", app.isPackaged);
-  console.log("process.resourcesPath:", process.resourcesPath);
-  if (process.env.VITE_DEV_SERVER_URL) {
-    win.loadURL(process.env.VITE_DEV_SERVER_URL);
-    console.log("Loading dev server:", process.env.VITE_DEV_SERVER_URL);
-  } else {
-    const indexPath = path.join(process.env.DIST, "index.html");
-    console.log("Loading file:", indexPath);
-    win.loadFile(indexPath);
+  }), i.setMenu(null), console.log("__dirname:", l), console.log("process.env.DIST:", process.env.DIST), console.log("app.isPackaged:", a.isPackaged), console.log("process.resourcesPath:", process.resourcesPath), process.env.VITE_DEV_SERVER_URL)
+    i.loadURL(process.env.VITE_DEV_SERVER_URL), console.log("Chargement du serveur de dev:", process.env.VITE_DEV_SERVER_URL);
+  else {
+    const s = n.join(process.env.DIST, "index.html");
+    console.log("Chargement du fichier index:", s), i.loadFile(s);
   }
 };
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+a.on("window-all-closed", () => {
+  process.platform !== "darwin" && a.quit();
 });
-app.whenReady().then(() => {
-  createWindow();
-  win?.webContents.getPrintersAsync().then((printers) => {
-    console.log("--- IMPRIMANTES DISPONIBLES ---");
-    printers.forEach((p) => {
-      console.log(`- Nom: ${p.name} | Description: ${p.description}`);
-    });
-    console.log("-------------------------------");
-  });
-  ipcMain.handle("print-order", async (event, orderData) => {
-    if (!win) return { success: false, error: "No window" };
-    console.log("Printing order:", orderData.id);
-    let printWindow = null;
+a.whenReady().then(() => {
+  R(), i?.webContents.getPrintersAsync().then((s) => {
+    console.log("--- IMPRIMANTES DISPONIBLES ---"), s.forEach((t) => {
+      console.log(`- Nom: ${t.name} | Description: ${t.description}`);
+    }), console.log("-------------------------------");
+  }), y.handle("print-order", async (s, t) => {
+    if (!i) return { success: !1, error: "Pas de fenêtre active" };
+    console.log("Impression de la commande :", t.id);
+    let o = null;
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2500));
-      printWindow = new BrowserWindow({
-        show: false,
+      await new Promise((e) => setTimeout(e, 2500)), o = new c({
+        show: !1,
         width: 300,
         height: 600,
         webPreferences: {
-          nodeIntegration: true,
-          contextIsolation: false
+          nodeIntegration: !0,
+          contextIsolation: !1
         }
       });
-      const itemsHtml = orderData.items ? orderData.items.map((item) => `
+      const r = t.items ? t.items.map((e) => `
         <div class="item">
           <div class="row">
-            <span class="qty">${item.quantity}x</span>
-            <span class="name">${item.product.name}</span>
-            <span class="price">${(item.product.price * item.quantity).toFixed(2)}€</span>
+            <span class="qty">${e.quantity}x</span>
+            <span class="name">${e.product.name}</span>
+            <span class="price">${(e.product.price * e.quantity).toFixed(2)}€</span>
           </div>
-          ${item.selectedOptions && item.selectedOptions.length > 0 ? `
+          ${e.selectedOptions && e.selectedOptions.length > 0 ? `
             <div class="options">
-              ${item.selectedOptions.map((opt) => `+ ${opt.name}`).join("<br/>")}
+              ${e.selectedOptions.map((b) => `+ ${b.name}`).join("<br/>")}
             </div>
           ` : ""}
         </div>
-      `).join("") : "";
-      const total = orderData.total ? orderData.total.toFixed(2) : "0.00";
-      const date = (/* @__PURE__ */ new Date()).toLocaleString("fr-FR");
-      const receiptHtml = `
+      `).join("") : "", p = t.total ? t.total.toFixed(2) : "0.00", m = (/* @__PURE__ */ new Date()).toLocaleString("fr-FR"), g = `
         <!DOCTYPE html>
         <html>
         <head>
           <style>
             body {
               font-family: 'Courier New', Courier, monospace;
-              width: 270px; /* ~72mm marge safe */
+              width: 270px; /* Taille standard pour ticket ~80mm */
               margin: 0 auto;
               padding: 10px;
               background: #fff;
@@ -122,13 +105,13 @@ app.whenReady().then(() => {
           <div class="divider"></div>
           
           <div class="title">TICKET CLIENT</div>
-          <div class="order-num">#${orderData.orderNumber}</div>
-          <div style="text-align:center; margin-bottom:10px;">${date}</div>
+          <div class="order-num">#${t.orderNumber}</div>
+          <div style="text-align:center; margin-bottom:10px;">${m}</div>
           
           <div class="divider"></div>
           
           <div class="items">
-            ${itemsHtml}
+            ${r}
           </div>
           
           <div class="divider"></div>
@@ -136,11 +119,11 @@ app.whenReady().then(() => {
           <div class="total-section">
             <div class="row">
               <span>TOTAL TTC</span>
-              <span>${total} €</span>
+              <span>${p} €</span>
             </div>
             <div class="row" style="font-size: 10px; font-weight: normal; margin-top: 5px;">
               <span>Moyen de paiement</span>
-              <span>${orderData.paymentMethod === "cash" ? "ESPECES" : "CB"}</span>
+              <span>${t.paymentMethod === "cash" ? "ESPECES" : "CB"}</span>
             </div>
           </div>
           
@@ -150,21 +133,16 @@ app.whenReady().then(() => {
           </div>
         </body>
         </html>
-      `;
-      const dataUri = "data:text/html;charset=utf-8," + encodeURIComponent(receiptHtml);
-      await printWindow.loadURL(dataUri);
-      const desktopPath = os.homedir() + "/Desktop";
-      const fileName = `Ticket_ZenIto_${orderData.orderNumber}_${Date.now()}.pdf`;
-      const pdfPath = path.join(desktopPath, fileName);
-      const pdfData = await printWindow.webContents.printToPDF({
-        printBackground: true,
+      `, f = "data:text/html;charset=utf-8," + encodeURIComponent(g);
+      await o.loadURL(f);
+      const h = E.homedir() + "/Desktop", v = `Ticket_ZenIto_${t.orderNumber}_${Date.now()}.pdf`, d = n.join(h, v), u = await o.webContents.printToPDF({
+        printBackground: !0,
         pageSize: "A4",
+        // On utilise du A4 pour la visibilité du fichier PDF
         margins: { top: 0, bottom: 0, left: 0, right: 0 }
       });
-      fs.writeFileSync(pdfPath, pdfData);
-      console.log("PDF saved to:", pdfPath);
-      console.log("Preparing label for Niimbot B1...");
-      const labelHtml = `
+      I.writeFileSync(d, u), console.log("PDF sauvegardé ici :", d), console.log("Préparation de l'étiquette pour la Niimbot B1...");
+      const w = `
         <!DOCTYPE html>
         <html>
         <head>
@@ -187,38 +165,29 @@ app.whenReady().then(() => {
         </head>
         <body>
           <div class="title">COMMANDE</div>
-          <div class="number">#${orderData.orderNumber}</div>
+          <div class="number">#${t.orderNumber}</div>
           <div class="time">${(/* @__PURE__ */ new Date()).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div>
         </body>
         </html>
-      `;
-      const labelDataUri = "data:text/html;charset=utf-8," + encodeURIComponent(labelHtml);
-      await printWindow.loadURL(dataUri);
-      await printWindow.loadURL(labelDataUri);
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      `, x = "data:text/html;charset=utf-8," + encodeURIComponent(w);
+      await o.loadURL(x), await new Promise((e) => setTimeout(e, 500));
       try {
-        await printWindow.webContents.print({
-          silent: true,
-          printBackground: false,
-          // Noir et blanc pur souvent mieux pour thermique basique
+        await o.webContents.print({
+          silent: !0,
+          printBackground: !1,
           deviceName: "NIIMBOT B1",
-          // "NIIMBOT B1" pour le test
-          color: false,
+          // Nom de l'imprimante thermique
+          color: !1,
           margins: { marginType: "none" },
-          // Dimensions des étiquettes standard B1 (50x30mm) - A ajuster selon le rouleau
+          // Dimensions des étiquettes (50x30mm)
           pageSize: { width: 5e4, height: 3e4 }
-        });
-        console.log("Label printed on Niimbot B1");
-      } catch (printError) {
-        console.error("Failed to print to Niimbot:", printError);
+        }), console.log("Étiquette envoyée à la Niimbot B1");
+      } catch (e) {
+        console.error("Échec de l'impression sur la Niimbot (pas grave, le PDF est généré) :", e);
       }
-      await new Promise((resolve) => setTimeout(resolve, 5e3));
-      printWindow.close();
-      return { success: true, path: pdfPath };
-    } catch (error) {
-      console.error("Print failed:", error);
-      if (printWindow) printWindow.close();
-      return { success: false, error: error.message };
+      return await new Promise((e) => setTimeout(e, 5e3)), o.close(), { success: !0, path: d };
+    } catch (r) {
+      return console.error("L'impression a foiré :", r), o && o.close(), { success: !1, error: r.message };
     }
   });
 });

@@ -33,7 +33,7 @@ const createWindow = () => {
   // On empêche la fermeture accidentelle via les menus
   win.setMenu(null)
 
-  // Quelques logs pour voir ce qu'on fait au démarrage
+  // Logs de débogage
   console.log('__dirname:', __dirname)
   console.log('process.env.DIST:', process.env.DIST)
   console.log('app.isPackaged:', app.isPackaged)

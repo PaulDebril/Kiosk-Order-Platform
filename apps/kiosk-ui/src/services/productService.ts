@@ -1,47 +1,104 @@
-import { products, categories } from '../data/mockData';
 import type { Product, Category } from '../types';
 
-// Simuler un délai réseau pour imiter une vraie API
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 export const productService = {
     /**
      * Récupère toutes les catégories
      */
     getCategories: async (): Promise<Category[]> => {
-        await delay(300); // Simulation latence
-        console.log('API call: getCategories');
-        return categories;
+        try {
+            const response = await fetch(`${API_URL}/categories`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching categories:', error);
+            return [];
+        }
     },
 
     /**
      * Récupère tous les produits
      */
     getAllProducts: async (): Promise<Product[]> => {
-        await delay(500);
-        console.log('API call: getAllProducts');
-        return products;
+        try {
+            const response = await fetch(`${API_URL}/products`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            return [];
+        }
     },
 
     /**
      * Récupère les produits par catégorie
-     * @param categoryId L'ID de la catégorie
+     * (Filtrage côté client pour l'instant ou via API si implémenté)
      */
     getProductsByCategory: async (categoryId: string): Promise<Product[]> => {
-        await delay(300);
-        const category = categories.find(c => c.id === categoryId);
-        if (!category) return [];
-
-        // Note: Dans mockData, les produits sont liés par le nom de la catégorie ('category')
-        // et non l'ID. Dans une vraie API, ce serait probablement l'ID.
-        return products.filter(p => p.category === category.name);
+        try {
+            const products = await productService.getAllProducts();
+            return products.filter(p => p.category === categoryId || p.category === products.find(prod => prod.id === p.id)?.category);
+        } catch (error) {
+            console.error('Error fetching products by category:', error);
+            return [];
+        }
     },
 
     /**
      * Récupère un produit par son ID
      */
     getProductById: async (id: string): Promise<Product | undefined> => {
-        await delay(200);
-        return products.find(p => p.id === id);
+        try {
+            const response = await fetch(`${API_URL}/products/${id}`);
+            if (!response.ok) return undefined;
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching product:', error);
+            return undefined;
+        }
     }
 };
+
+// Override les méthodes pour mapper correctement les données Backend -> Frontend
+const originalGetAll = productService.getAllProducts;
+productService.getAllProducts = async () => {
+    const rawProducts = await originalGetAll();
+    // Mapper les champs qui diffèrent
+    return rawProducts.map((p: any) => ({
+        ...p,
+        category: p.categoryName || 'Inconnu', // Map categoryName -> category
+        optionGroups: p.options ? p.options.map((opt: any) => ({
+            id: opt.id,
+            name: opt.name,
+            type: opt.type,
+            required: opt.required,
+            maxQuantity: opt.maxQuantity,
+            options: opt.options // choices
+        })) : []
+    }));
+};
+
+const originalGetById = productService.getProductById;
+productService.getProductById = async (id: string) => {
+    const p: any = await originalGetById(id);
+    if (!p) return undefined;
+    return {
+        ...p,
+        category: p.categoryName || 'Inconnu',
+        optionGroups: p.options ? p.options.map((opt: any) => ({
+            id: opt.id,
+            name: opt.name,
+            type: opt.type,
+            required: opt.required,
+            maxQuantity: opt.maxQuantity,
+            options: opt.options
+        })) : []
+    };
+};
+
+productService.getProductsByCategory = async (categoryId: string) => {
+    const all = await productService.getAllProducts();
+    return all.filter((p: any) => p.categoryId === categoryId);
+};
+
