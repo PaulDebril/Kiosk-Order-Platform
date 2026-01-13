@@ -9,22 +9,20 @@ export default defineConfig(({ mode }) => {
   const isElectronOrBuild = mode === 'electron' || mode === 'production';
 
   return {
-    base: './', // Indispensable pour l'écran blanc (chemins relatifs)
+    base: './', // Pour que les assets soient bien résolus dans l'app Electron
     plugins: [
       tailwindcss(),
       react(),
-      // On charge le plugin Electron avec DEUX entrées : Main + Preload
       isElectronOrBuild && electron([
         {
-          // 1. Le processus principal (Cerveau)
+          // 1. Le processus 
           entry: 'electron/main.ts',
         },
         {
-          // 2. Le script de préchargement (Pont)
-          // C'est ça qui manquait et causait ton erreur "Unable to load preload script"
+          // 2. Le script de préchargement
           entry: 'electron/preload.ts',
           onstart(options) {
-            options.reload() // Recharge la page si on modifie le preload
+            options.reload()
           },
         },
       ]),

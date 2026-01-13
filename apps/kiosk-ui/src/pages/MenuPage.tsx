@@ -37,7 +37,7 @@ export const MenuPage: React.FC = () => {
     };
 
     loadData();
-  }, []);
+  }, [activeCategory]);
 
   // On filtre les produits pour ne garder que ceux de la catégorie sélectionnée
   const filteredProducts = useMemo(() => {

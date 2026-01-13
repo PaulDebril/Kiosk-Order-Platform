@@ -1,7 +1,13 @@
+// Extension du type Window pour inclure require (Electron)
+interface ElectronWindow extends Window {
+    require?: (module: string) => { ipcRenderer: { invoke: (channel: string, ...args: unknown[]) => Promise<unknown> } };
+}
+
 // Petite fonction pour récupérer l'IPC d'Electron proprement
 const getIpcRenderer = () => {
-    if ((window as any).require) {
-        const electron = (window as any).require('electron');
+    const electronWindow = window as ElectronWindow;
+    if (electronWindow.require) {
+        const electron = electronWindow.require('electron');
         return electron.ipcRenderer;
     }
     return null;
@@ -9,7 +15,7 @@ const getIpcRenderer = () => {
 
 export const systemService = {
     // C'est ici qu'on lance l'impression du ticket de caisse
-    printOrder: async (orderData: any) => {
+    printOrder: async (orderData: unknown) => {
         const ipcRenderer = getIpcRenderer();
 
         // Si on est bien dans l'app Electron, on demande l'impression au système
@@ -30,7 +36,8 @@ export const systemService = {
 
     // Un petit check rapide pour savoir si on tourne sous Electron ou pas
     isElectron: () => {
-        return !!(window as any).require;
+        const electronWindow = window as ElectronWindow;
+        return !!electronWindow.require;
     }
 };
 

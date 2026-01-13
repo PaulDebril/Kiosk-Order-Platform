@@ -92,7 +92,13 @@ app.whenReady().then(() => {
       })
 
       // On prépare le HTML pour les articles de la commande
-      const itemsHtml = orderData.items ? orderData.items.map((item: any) => `
+      interface OrderItem {
+        quantity: number;
+        product: { name: string; price: number };
+        selectedOptions?: { name: string }[];
+      }
+      
+      const itemsHtml = orderData.items ? orderData.items.map((item: OrderItem) => `
         <div class="item">
           <div class="row">
             <span class="qty">${item.quantity}x</span>
@@ -101,7 +107,7 @@ app.whenReady().then(() => {
           </div>
           ${item.selectedOptions && item.selectedOptions.length > 0 ? `
             <div class="options">
-              ${item.selectedOptions.map((opt: any) => `+ ${opt.name}`).join('<br/>')}
+              ${item.selectedOptions.map((opt) => `+ ${opt.name}`).join('<br/>')}
             </div>
           ` : ''}
         </div>
@@ -259,10 +265,11 @@ app.whenReady().then(() => {
       printWindow.close();
       return { success: true, path: pdfPath }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
       console.error('L\'impression a foiré :', error)
       if (printWindow) printWindow.close();
-      return { success: false, error: error.message }
+      return { success: false, error: errorMessage }
     }
   })
 })

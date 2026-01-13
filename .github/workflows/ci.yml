@@ -1,0 +1,84 @@
+name: CI - Build and Test
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test-backend:
+    name: Test Backend (.NET)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore apps/kiosk-backend/kiosk-backend.csproj
+
+      - name: Build backend
+        run: dotnet build apps/kiosk-backend/kiosk-backend.csproj --configuration Debug --no-restore
+
+      - name: Test backend (if tests exist)
+        run: |
+          if [ -d "tests" ]; then
+            dotnet test --no-build --verbosity normal
+          else
+            echo "No tests found, skipping..."
+          fi
+
+  build-frontend:
+    name: Build Frontend (Electron)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: apps/kiosk-ui/package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/kiosk-ui
+        run: npm ci
+
+      - name: Lint
+        working-directory: apps/kiosk-ui
+        run: npm run lint
+
+      - name: Build
+        working-directory: apps/kiosk-ui
+        run: npm run build
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+  docker-build:
+    name: Docker Build Backend
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (test)
+        working-directory: apps/kiosk-backend
+        run: |
+          docker build -t kiosk-backend:test .
