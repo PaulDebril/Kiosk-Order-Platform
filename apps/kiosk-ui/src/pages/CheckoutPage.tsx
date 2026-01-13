@@ -160,10 +160,7 @@ export const CheckoutPage: React.FC = () => {
                   <span className="font-medium">Sous-total</span>
                   <span className="font-bold text-stone-200">{subtotal.toFixed(2)}€</span>
                 </div>
-                <div className="flex justify-between text-stone-400">
-                  <span className="font-medium">TVA (10%)</span>
-                  <span className="font-bold text-stone-200">{tax.toFixed(2)}€</span>
-                </div>
+                
                 <div className="border-t border-stone-800 pt-6 mt-4">
                   <div className="flex justify-between items-end">
                     <span className="text-xl font-bold text-stone-300">Total TTC</span>

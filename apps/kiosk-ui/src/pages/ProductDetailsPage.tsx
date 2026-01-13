@@ -257,7 +257,7 @@ export const ProductDetailsPage: React.FC = () => {
                         <button
                             onClick={handleAddToCart}
                             disabled={!isSelectionValid}
-                            className="flex-1 bg-primary-600 text-white rounded-2xl h-16 text-xl font-bold font-serif shadow-lg hover:bg-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-between px-8"
+                            className="flex-1 bg-primary-600 text-white rounded-2xl h-16 text-xl font-bold font-serif border border-stone-900 shadow-[0_0_20px_rgba(0,0,0,0.4)] hover:bg-primary-500 hover:shadow-[0_0_30px_rgba(0,0,0,0.6)] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all flex items-center justify-between px-8"
                         >
                             <span>{isSelectionValid ? 'Ajouter à ma commande' : 'Sélection incomplète'}</span>
                             <span>{totalPrice.toFixed(2)} €</span>

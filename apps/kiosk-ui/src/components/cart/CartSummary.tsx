@@ -30,7 +30,7 @@ export const CartSummary: React.FC = () => {
               <div className="bg-stone-800 rounded-2xl p-4 shadow-inner border border-stone-700">
                 <IoCart className="w-10 h-10 text-primary-500" />
               </div>
-              <div className="absolute -top-2 -right-2 bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm shadow-lg border-2 border-stone-900">
+              <div className="absolute -top-2 -right-2 bg-stone-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm shadow-lg border-2 border-stone-700">
                 {itemCount}
               </div>
             </div>
@@ -49,7 +49,7 @@ export const CartSummary: React.FC = () => {
           {/* Checkout Button */}
           <button
             onClick={() => navigate('/checkout')}
-            className="group relative overflow-hidden bg-primary-600 text-white px-12 py-6 rounded-2xl font-bold text-2xl shadow-xl transform transition-all duration-300 hover:scale-[1.02] hover:shadow-primary-600/30 flex items-center space-x-6"
+            className="group relative overflow-hidden bg-primary-600 text-white px-12 py-6 rounded-2xl font-bold text-2xl border border-stone-900 shadow-[0_0_20px_rgba(0,0,0,0.4)] transform transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(0,0,0,0.6)] flex items-center space-x-6"
           >
             <span className="relative z-10 tracking-widest font-serif">COMMANDER</span>
             <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center relative z-10 group-hover:bg-white/30 transition-colors">
