@@ -21,6 +21,24 @@ public class LoyaltyController : ControllerBase
         return Ok(new { account, transactions });
     }
 
+    [HttpPost("validate")]
+    public async Task<IActionResult> ValidateCode([FromBody] ValidateCodeRequest request)
+    {
+        var account = await _service.ValidateAndGetAccountAsync(request.Code);
+        if (account == null) 
+        {
+            return NotFound(new { message = "Code fidélité non trouvé" });
+        }
+        
+        return Ok(new { 
+            id = account.Id,
+            nickName = account.NickName,
+            fullName = account.FullName,
+            points = account.Points,
+            loyaltyNumber = account.LoyaltyNumber
+        });
+    }
+
     [HttpPost("register")]
     public async Task<IActionResult> Create([FromBody] LoyaltyAccount account)
     {
@@ -48,3 +66,4 @@ public class LoyaltyController : ControllerBase
 
 public record AddPointsRequest(decimal Amount);
 public record RedeemPointsRequest(int Points);
+public record ValidateCodeRequest(string Code);

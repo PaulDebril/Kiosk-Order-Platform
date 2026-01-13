@@ -4,9 +4,12 @@ import { ProductCard } from '../components/menu/ProductCard';
 import { CartSummary } from '../components/cart/CartSummary';
 import { CategoryIcon } from '../components/common/CategoryIcon';
 import { productService } from '../services';
+import { useCart } from '../context/CartContext';
 import type { Category, Product } from '../types';
 
 export const MenuPage: React.FC = () => {
+  const { state } = useCart();
+  const userName = state.loyaltyUser?.nickName;
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>('');
@@ -84,6 +87,12 @@ export const MenuPage: React.FC = () => {
                   <span>Sélection du chef</span>
                 </p>
               </div>
+              {userName && (
+                <div className="bg-stone-800/50 backdrop-blur-md px-6 py-3 rounded-2xl border border-stone-700">
+                  <p className="text-stone-400 text-sm uppercase tracking-wider">Connecté en tant que</p>
+                  <p className="text-white text-xl font-bold font-serif">{userName}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

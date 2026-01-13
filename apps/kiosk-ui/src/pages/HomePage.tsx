@@ -7,7 +7,8 @@ import { CategoryIcon } from '../components/common/CategoryIcon';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const { setOrderType } = useCart();
+  const { setOrderType, state } = useCart();
+  const userName = state.loyaltyUser?.nickName;
 
   const handleOrderTypeSelect = (type: 'dine-in' | 'takeout') => {
     setOrderType(type);
@@ -35,7 +36,7 @@ export const HomePage: React.FC = () => {
             <CategoryIcon icon="sushi" className="w-20 h-20 text-primary-500 drop-shadow-[0_0_15px_rgba(225,29,72,0.5)]" />
           </div>
           <h1 className="text-6xl sm:text-7xl font-black text-white mb-2 font-serif tracking-tight">
-            Où souhaitez-vous<br />déguster ?
+            Où souhaitez-vous<br />déguster{userName ? `, ${userName}` : ''} ?
           </h1>
           <p className="text-2xl text-stone-400 font-light tracking-wide mt-4">
             Sélectionnez votre mode de dégustation

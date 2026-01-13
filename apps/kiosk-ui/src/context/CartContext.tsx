@@ -1,9 +1,18 @@
 import React, { createContext, useContext, useReducer, type ReactNode } from 'react';
 import type { CartItem, OrderType, Product, SelectedOption } from '../types';
 
+export interface LoyaltyUser {
+  id: string;
+  nickName: string;
+  fullName: string;
+  points: number;
+  loyaltyNumber: string;
+}
+
 interface CartState {
   items: CartItem[];
   orderType: OrderType | null;
+  loyaltyUser: LoyaltyUser | null;
 }
 
 type CartAction =
@@ -11,7 +20,8 @@ type CartAction =
   | { type: 'REMOVE_ITEM'; payload: string }
   | { type: 'UPDATE_QUANTITY'; payload: { productId: string; quantity: number; options?: SelectedOption[] } } // On identifie l'article par son ID
   | { type: 'CLEAR_CART' }
-  | { type: 'SET_ORDER_TYPE'; payload: OrderType };
+  | { type: 'SET_ORDER_TYPE'; payload: OrderType }
+  | { type: 'SET_LOYALTY_USER'; payload: LoyaltyUser | null };
 
 interface CartContextType {
   state: CartState;
@@ -20,6 +30,7 @@ interface CartContextType {
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   setOrderType: (type: OrderType) => void;
+  setLoyaltyUser: (user: LoyaltyUser | null) => void;
   getTotal: () => number;
   getItemCount: () => number;
 }
@@ -87,6 +98,9 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
     case 'SET_ORDER_TYPE':
       return { ...state, orderType: action.payload };
 
+    case 'SET_LOYALTY_USER':
+      return { ...state, loyaltyUser: action.payload };
+
     default:
       return state;
   }
@@ -96,6 +110,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [state, dispatch] = useReducer(cartReducer, {
     items: [],
     orderType: null,
+    loyaltyUser: null,
   });
 
   const addItem = (product: Product, quantity: number = 1, options?: SelectedOption[]) => {
@@ -116,6 +131,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const setOrderType = (type: OrderType) => {
     dispatch({ type: 'SET_ORDER_TYPE', payload: type });
+  };
+
+  const setLoyaltyUser = (user: LoyaltyUser | null) => {
+    dispatch({ type: 'SET_LOYALTY_USER', payload: user });
   };
 
   // Calcule le prix total du panier (produits + options)
@@ -141,6 +160,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         updateQuantity,
         clearCart,
         setOrderType,
+        setLoyaltyUser,
         getTotal,
         getItemCount,
       }}

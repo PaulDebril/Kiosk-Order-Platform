@@ -30,6 +30,15 @@ const createWindow = () => {
     },
   })
 
+  // Permissions pour la caméra (natif Electron)
+  win.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
+    if (permission === 'media') {
+      callback(true) // Autorise l'accès à la caméra/micro
+    } else {
+      callback(false)
+    }
+  })
+
   // On empêche la fermeture accidentelle via les menus
   win.setMenu(null)
 

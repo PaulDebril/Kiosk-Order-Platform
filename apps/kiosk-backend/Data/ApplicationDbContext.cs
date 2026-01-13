@@ -335,11 +335,13 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<LoyaltyAccount>().HasData(
             new LoyaltyAccount {
                 Id = Guid.NewGuid(),
-                FullName = "Marine L",
-                Email = "marine@example.com",
+                LoyaltyNumber = "111111",
+                NickName = "Paul",
+                FullName = "Paul Debril",
+                Email = "paul@example.com",
                 PhoneNumber = "0612345678",
-                LoyaltyNumber = "QR-MARINE-001",
-                Points = 320
+                Points = 150,
+                OrderHistory = new List<Guid>()
             }
         );
     }

@@ -15,6 +15,12 @@ public class LoyaltyService : ILoyaltyService
             .FirstOrDefaultAsync(la => la.LoyaltyNumber == loyaltyNumber);
     }
 
+    public async Task<LoyaltyAccount?> ValidateAndGetAccountAsync(string loyaltyCode)
+    {
+        return await _context.LoyaltyAccounts
+            .FirstOrDefaultAsync(la => la.LoyaltyNumber == loyaltyCode);
+    }
+
     public async Task<LoyaltyAccount> CreateAccountAsync(LoyaltyAccount account)
     {
         account.Id = Guid.NewGuid();

@@ -25,6 +25,13 @@ const createWindow = () => {
       webSecurity: false
     }
   });
+  win.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
+    if (permission === "media") {
+      callback(true);
+    } else {
+      callback(false);
+    }
+  });
   win.setMenu(null);
   console.log("__dirname:", __dirname$1);
   console.log("process.env.DIST:", process.env.DIST);
