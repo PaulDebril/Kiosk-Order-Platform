@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdTouchApp } from 'react-icons/md';
+import startScreenBg from '/images/StartScreen.png';
 
 export const StartScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export const StartScreen: React.FC = () => {
   return (
     <div
       className="h-screen w-full bg-cover bg-center bg-no-repeat relative overflow-hidden cursor-pointer group"
-      style={{ backgroundImage: 'url(/images/StartScreen.png)' }}
+      style={{ backgroundImage: `url(${startScreenBg})` }}
       onClick={handleStart}
     >
       <div className="absolute inset-0 bg-stone-900/40 group-hover:bg-stone-900/30 transition-all duration-700" />

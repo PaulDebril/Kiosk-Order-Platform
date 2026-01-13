@@ -1,95 +1,73 @@
-import { app, ipcMain, BrowserWindow } from "electron";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from "fs";
-import os from "os";
-const __filename$1 = fileURLToPath(import.meta.url);
-const __dirname$1 = path.dirname(__filename$1);
-process.env.DIST = path.join(__dirname$1, "../dist");
-process.env.VITE_PUBLIC = app.isPackaged ? process.env.DIST : path.join(__dirname$1, "../public");
-let win;
-const createWindow = () => {
-  win = new BrowserWindow({
+import { app as a, ipcMain as y, BrowserWindow as p } from "electron";
+import s from "path";
+import { fileURLToPath as T } from "url";
+import E from "fs";
+import I from "os";
+const P = T(import.meta.url), l = s.dirname(P);
+process.env.DIST = s.join(l, "../dist");
+process.env.VITE_PUBLIC = a.isPackaged ? process.env.DIST : s.join(l, "../public");
+let i;
+const R = () => {
+  if (i = new p({
     width: 800,
     height: 600,
-    fullscreen: true,
+    fullscreen: !0,
     // Pour une borne, on veut direct le plein écran
-    frame: false,
+    frame: !1,
     // On vire la barre de titre pour faire plus "borne de commande"
-    kiosk: true,
+    kiosk: !0,
     // On verrouille tout en mode kiosque strict
     webPreferences: {
-      preload: path.join(__dirname$1, "preload.js"),
-      nodeIntegration: true,
-      contextIsolation: false,
-      webSecurity: false
+      preload: s.join(l, "preload.js"),
+      nodeIntegration: !0,
+      contextIsolation: !1,
+      webSecurity: !1
     }
-  });
-  win.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
-    if (permission === "media") {
-      callback(true);
-    } else {
-      callback(false);
-    }
-  });
-  win.setMenu(null);
-  console.log("__dirname:", __dirname$1);
-  console.log("process.env.DIST:", process.env.DIST);
-  console.log("app.isPackaged:", app.isPackaged);
-  console.log("process.resourcesPath:", process.resourcesPath);
-  if (process.env.VITE_DEV_SERVER_URL) {
-    win.loadURL(process.env.VITE_DEV_SERVER_URL);
-    console.log("Chargement du serveur de dev:", process.env.VITE_DEV_SERVER_URL);
-  } else {
-    const indexPath = path.join(process.env.DIST, "index.html");
-    console.log("Chargement du fichier index:", indexPath);
-    win.loadFile(indexPath);
+  }), i.webContents.session.setPermissionRequestHandler((n, t, o) => {
+    o(t === "media");
+  }), i.setMenu(null), console.log("__dirname:", l), console.log("process.env.DIST:", process.env.DIST), console.log("app.isPackaged:", a.isPackaged), console.log("process.resourcesPath:", process.resourcesPath), process.env.VITE_DEV_SERVER_URL)
+    i.loadURL(process.env.VITE_DEV_SERVER_URL), console.log("Chargement du serveur de dev:", process.env.VITE_DEV_SERVER_URL);
+  else {
+    const n = s.join(process.env.DIST, "index.html");
+    console.log("Chargement du fichier index:", n), i.loadFile(n);
   }
 };
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") app.quit();
+a.on("window-all-closed", () => {
+  process.platform !== "darwin" && a.quit();
 });
-app.whenReady().then(() => {
-  createWindow();
-  win?.webContents.getPrintersAsync().then((printers) => {
-    console.log("--- IMPRIMANTES DISPONIBLES ---");
-    printers.forEach((p) => {
-      console.log(`- Nom: ${p.name} | Description: ${p.description}`);
-    });
-    console.log("-------------------------------");
-  });
-  ipcMain.handle("print-order", async (event, orderData) => {
-    if (!win) return { success: false, error: "Pas de fenêtre active" };
-    console.log("Impression de la commande :", orderData.id);
-    let printWindow = null;
+a.whenReady().then(() => {
+  R(), i?.webContents.getPrintersAsync().then((n) => {
+    console.log("--- IMPRIMANTES DISPONIBLES ---"), n.forEach((t) => {
+      console.log(`- Nom: ${t.name} | Description: ${t.description}`);
+    }), console.log("-------------------------------");
+  }), y.handle("print-order", async (n, t) => {
+    if (!i) return { success: !1, error: "Pas de fenêtre active" };
+    console.log("Impression de la commande :", t.id);
+    let o = null;
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2500));
-      printWindow = new BrowserWindow({
-        show: false,
+      await new Promise((e) => setTimeout(e, 2500)), o = new p({
+        show: !1,
         width: 300,
         height: 600,
         webPreferences: {
-          nodeIntegration: true,
-          contextIsolation: false
+          nodeIntegration: !0,
+          contextIsolation: !1
         }
       });
-      const itemsHtml = orderData.items ? orderData.items.map((item) => `
+      const r = t.items ? t.items.map((e) => `
         <div class="item">
           <div class="row">
-            <span class="qty">${item.quantity}x</span>
-            <span class="name">${item.product.name}</span>
-            <span class="price">${(item.product.price * item.quantity).toFixed(2)}€</span>
+            <span class="qty">${e.quantity}x</span>
+            <span class="name">${e.product.name}</span>
+            <span class="price">${(e.product.price * e.quantity).toFixed(2)}€</span>
           </div>
-          ${item.selectedOptions && item.selectedOptions.length > 0 ? `
+          ${e.selectedOptions && e.selectedOptions.length > 0 ? `
             <div class="options">
-              ${item.selectedOptions.map((opt) => `+ ${opt.name}`).join("<br/>")}
+              ${e.selectedOptions.map((b) => `+ ${b.name}`).join("<br/>")}
             </div>
           ` : ""}
         </div>
-      `).join("") : "";
-      const total = orderData.total ? orderData.total.toFixed(2) : "0.00";
-      const date = (/* @__PURE__ */ new Date()).toLocaleString("fr-FR");
-      const receiptHtml = `
+      `).join("") : "", d = t.total ? t.total.toFixed(2) : "0.00", m = (/* @__PURE__ */ new Date()).toLocaleString("fr-FR"), f = `
         <!DOCTYPE html>
         <html>
         <head>
@@ -129,13 +107,13 @@ app.whenReady().then(() => {
           <div class="divider"></div>
           
           <div class="title">TICKET CLIENT</div>
-          <div class="order-num">#${orderData.orderNumber}</div>
-          <div style="text-align:center; margin-bottom:10px;">${date}</div>
+          <div class="order-num">#${t.orderNumber}</div>
+          <div style="text-align:center; margin-bottom:10px;">${m}</div>
           
           <div class="divider"></div>
           
           <div class="items">
-            ${itemsHtml}
+            ${r}
           </div>
           
           <div class="divider"></div>
@@ -143,11 +121,11 @@ app.whenReady().then(() => {
           <div class="total-section">
             <div class="row">
               <span>TOTAL TTC</span>
-              <span>${total} €</span>
+              <span>${d} €</span>
             </div>
             <div class="row" style="font-size: 10px; font-weight: normal; margin-top: 5px;">
               <span>Moyen de paiement</span>
-              <span>${orderData.paymentMethod === "cash" ? "ESPECES" : "CB"}</span>
+              <span>${t.paymentMethod === "cash" ? "ESPECES" : "CB"}</span>
             </div>
           </div>
           
@@ -157,22 +135,16 @@ app.whenReady().then(() => {
           </div>
         </body>
         </html>
-      `;
-      const dataUri = "data:text/html;charset=utf-8," + encodeURIComponent(receiptHtml);
-      await printWindow.loadURL(dataUri);
-      const desktopPath = os.homedir() + "/Desktop";
-      const fileName = `Ticket_ZenIto_${orderData.orderNumber}_${Date.now()}.pdf`;
-      const pdfPath = path.join(desktopPath, fileName);
-      const pdfData = await printWindow.webContents.printToPDF({
-        printBackground: true,
+      `, g = "data:text/html;charset=utf-8," + encodeURIComponent(f);
+      await o.loadURL(g);
+      const h = I.homedir() + "/Desktop", u = `Ticket_ZenIto_${t.orderNumber}_${Date.now()}.pdf`, c = s.join(h, u), v = await o.webContents.printToPDF({
+        printBackground: !0,
         pageSize: "A4",
         // On utilise du A4 pour la visibilité du fichier PDF
         margins: { top: 0, bottom: 0, left: 0, right: 0 }
       });
-      fs.writeFileSync(pdfPath, pdfData);
-      console.log("PDF sauvegardé ici :", pdfPath);
-      console.log("Préparation de l'étiquette pour la Niimbot B1...");
-      const labelHtml = `
+      E.writeFileSync(c, v), console.log("PDF sauvegardé ici :", c), console.log("Préparation de l'étiquette pour la Niimbot B1...");
+      const w = `
         <!DOCTYPE html>
         <html>
         <head>
@@ -195,37 +167,30 @@ app.whenReady().then(() => {
         </head>
         <body>
           <div class="title">COMMANDE</div>
-          <div class="number">#${orderData.orderNumber}</div>
+          <div class="number">#${t.orderNumber}</div>
           <div class="time">${(/* @__PURE__ */ new Date()).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div>
         </body>
         </html>
-      `;
-      const labelDataUri = "data:text/html;charset=utf-8," + encodeURIComponent(labelHtml);
-      await printWindow.loadURL(labelDataUri);
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      `, x = "data:text/html;charset=utf-8," + encodeURIComponent(w);
+      await o.loadURL(x), await new Promise((e) => setTimeout(e, 500));
       try {
-        await printWindow.webContents.print({
-          silent: true,
-          printBackground: false,
+        await o.webContents.print({
+          silent: !0,
+          printBackground: !1,
           deviceName: "NIIMBOT B1",
           // Nom de l'imprimante thermique
-          color: false,
+          color: !1,
           margins: { marginType: "none" },
           // Dimensions des étiquettes (50x30mm)
           pageSize: { width: 5e4, height: 3e4 }
-        });
-        console.log("Étiquette envoyée à la Niimbot B1");
-      } catch (printError) {
-        console.error("Échec de l'impression sur la Niimbot (pas grave, le PDF est généré) :", printError);
+        }), console.log("Étiquette envoyée à la Niimbot B1");
+      } catch (e) {
+        console.error("Échec de l'impression sur la Niimbot (pas grave, le PDF est généré) :", e);
       }
-      await new Promise((resolve) => setTimeout(resolve, 5e3));
-      printWindow.close();
-      return { success: true, path: pdfPath };
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Erreur inconnue";
-      console.error("L'impression a foiré :", error);
-      if (printWindow) printWindow.close();
-      return { success: false, error: errorMessage };
+      return await new Promise((e) => setTimeout(e, 5e3)), o.close(), { success: !0, path: c };
+    } catch (r) {
+      const d = r instanceof Error ? r.message : "Erreur inconnue";
+      return console.error("L'impression a foiré :", r), o && o.close(), { success: !1, error: d };
     }
   });
 });
