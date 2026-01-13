@@ -37,8 +37,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {/* Add Button - Zen Style */}
         <div className="absolute bottom-4 right-4 z-20">
-          <button className="bg-white text-stone-900 w-12 h-12 rounded-full flex items-center justify-center shadow-xl transform transition-all duration-300 group-hover:scale-110 group-hover:bg-primary-500 group-hover:text-white">
-            <IoAdd className="w-8 h-8" />
+          <button className="bg-white w-12 h-12 rounded-full flex items-center justify-center shadow-xl transform transition-all duration-300 group-hover:scale-110 group-hover:bg-primary-500">
+            <IoAdd className="w-8 h-8 text-stone-900 transition-colors duration-300" />
           </button>
         </div>
       </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { MdRestaurant, MdTakeoutDining } from 'react-icons/md';
+import { IoArrowBack } from 'react-icons/io5';
 import { CategoryIcon } from '../components/common/CategoryIcon';
 
 export const HomePage: React.FC = () => {
@@ -17,6 +18,14 @@ export const HomePage: React.FC = () => {
     <div className="h-screen bg-stone-900 flex items-center justify-center p-6 overflow-hidden relative">
       <div className="absolute inset-0 bg-[url('/images/StartScreen.png')] opacity-10 bg-cover bg-center bg-fixed" />
       <div className="absolute inset-0 bg-stone-900/90" />
+
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-6 left-6 p-4 rounded-full bg-stone-800/50 backdrop-blur-md text-white hover:bg-white hover:text-stone-900 transition-all z-20 shadow-lg"
+      >
+        <IoArrowBack className="w-8 h-8" />
+      </button>
 
       <div className="max-w-6xl w-full relative z-10">
         {/* Logo/Brand Section */}

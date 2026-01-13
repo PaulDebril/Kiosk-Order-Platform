@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoArrowForward } from 'react-icons/io5';
+import { IoArrowBack, IoArrowForward } from 'react-icons/io5';
 
 export const LoyaltyPage: React.FC = () => {
   const navigate = useNavigate();
@@ -91,9 +91,9 @@ export const LoyaltyPage: React.FC = () => {
               ))}
               <button
                 onClick={handleBackspace}
-                className="h-20 flex items-center justify-center text-stone-400 hover:text-white transition-colors"
+                className="h-20 bg-primary-600 disabled:bg-stone-800 disabled:text-stone-600 rounded-2xl flex items-center justify-center text-white shadow-lg transition-all"
               >
-                Correction
+                <IoArrowBack className="w-8 h-8" />
               </button>
               <button
                 onClick={() => handleKeypadClick('0')}

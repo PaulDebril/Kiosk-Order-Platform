@@ -117,7 +117,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Sushi Saumon",
                 Description = "Riz vinaigré, tranche de saumon frais premium",
                 Price = 4.50m,
-                Image = "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400&h=300&fit=crop",
+                Image = "https://www.momasushi.fr/wp-content/uploads/2023/03/MOMA-SUSHI-SAUMON-SNACKE-NOV24-PDANIEL-043-scaled.jpg",
                 CategoryId = catSushi,
                 Calories = 140,
                 IsPopular = true,
@@ -141,7 +141,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Sushi Thon",
                 Description = "Riz vinaigré et tranche de thon rouge frais",
                 Price = 5.00m,
-                Image = "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&h=300&fit=crop",
+                Image = "https://www.momasushi.fr/wp-content/uploads/2023/03/MOMA-SUSHI-THON-NIKKEI-NOV24-PDANIEL-048-scaled.jpg",
                 CategoryId = catSushi,
                 Calories = 130,
                 Ingredients = new List<string> { "Riz vinaigré", "Thon Rouge", "Wasabi" }
@@ -152,7 +152,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Sushi Crevette",
                 Description = "Riz vinaigré et crevette papillon",
                 Price = 4.80m,
-                Image = "https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=400&h=300&fit=crop",
+                Image = "https://www.momasushi.fr/wp-content/uploads/2023/03/MOMA-SUSHI-CREVETTE-NOV24-PDANIEL-042-scaled.jpg",
                 CategoryId = catSushi,
                 Calories = 120
             },
@@ -164,7 +164,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Maki Avocat",
                 Description = "Rouleau d'algue, riz, avocat frais",
                 Price = 3.90m,
-                Image = "https://images.unsplash.com/photo-1623341214825-9f4f963727da?w=400&h=300&fit=crop",
+                Image = "https://medias.cotesushi.com/products/149/large_514c1.webp",
                 CategoryId = catMaki,
                 Calories = 180,
                 Ingredients = new List<string> { "Riz", "Algue Nori", "Avocat" }
@@ -175,7 +175,7 @@ public class ApplicationDbContext : DbContext
                 Name = "California Saumon",
                 Description = "Saumon, avocat, sésame, riz à l'extérieur",
                 Price = 5.50m,
-                Image = "https://images.unsplash.com/photo-1625244695851-1fc873f942bc?w=400&h=300&fit=crop",
+                Image = "https://odelices.ouest-france.fr/images/recettes/california-rolls-saumon-avocat-makis-california.jpg",
                 CategoryId = catMaki,
                 Calories = 250,
                 Ingredients = new List<string> { "Riz", "Saumon", "Avocat", "Sésame" }
@@ -186,7 +186,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Dragon Roll",
                 Description = "Tempura de crevette, avocat, sauce unagi",
                 Price = 12.90m,
-                Image = "https://images.unsplash.com/photo-1615361200141-f45040f367be?w=400&h=300&fit=crop",
+                Image = "https://cdn.shopify.com/s/files/1/0353/5621/files/Dragon_Rolls_1024x1024.jpg?v=1627460696",
                 CategoryId = catMaki,
                 Calories = 450,
                 IsPopular = true
@@ -199,7 +199,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Sashimi Saumon (6 pcs)",
                 Description = "Fines tranches de saumon frais",
                 Price = 8.90m,
-                Image = "https://images.unsplash.com/photo-1534482421-64566f976cfa?w=400&h=300&fit=crop",
+                Image = "https://img.cuisineaz.com/660x660/2013/12/20/i27594-recette-de-sashimis.jpeg",
                 CategoryId = catSashimi,
                 Calories = 220
             },
@@ -209,7 +209,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Sashimi Thon (6 pcs)",
                 Description = "Fines tranches de thon rouge",
                 Price = 9.90m,
-                Image = "https://images.unsplash.com/photo-1583623025817-d180a2221d0a?w=400&h=300&fit=crop",
+                Image = "https://medias.cotesushi.com/products/178/large_d86d1.webp",
                 CategoryId = catSashimi,
                 Calories = 200
             },
@@ -221,7 +221,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Ramen Tonkotsu",
                 Description = "Bouillon d'os de porc riche, nouilles, chashu",
                 Price = 13.90m,
-                Image = "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=300&fit=crop",
+                Image = "https://glebekitchen.com/wp-content/uploads/2017/04/tonkotsuramenfront.jpg",
                 CategoryId = catRamen,
                 Calories = 600,
                 IsPopular = true,
@@ -233,7 +233,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Bœuf Gyu Don",
                 Description = "Bol de riz surmonté de bœuf mijoté et oignons",
                 Price = 12.50m,
-                Image = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop",
+                Image = "https://blog.umamiparis.com/wp-content/uploads/2019/08/Gyudon.jpg",
                 CategoryId = catRamen,
                 Calories = 750
             },
@@ -243,7 +243,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Gyoza (5 pcs)",
                 Description = "Raviolis japonais grillés au poulet et légumes",
                 Price = 6.50m,
-                Image = "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&h=300&fit=crop",
+                Image = "https://adc-dev-images-recipes.s3.eu-west-1.amazonaws.com/shutterstock_588814973.jpg",
                 CategoryId = catRamen,
                 Calories = 320
             },
@@ -278,7 +278,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Thé Vert Matcha",
                 Description = "Thé vert japonais glacé",
                 Price = 3.50m,
-                Image = "https://www.kokomorestaurant.fr/wp-content/uploads/2024/01/tea-green-matcha-kokomo.jpg",
+                Image = "https://img.freepik.com/photos-premium/belle-tasse-matcha-latte-feuille-the-vert-fond-sombre-vue-dessus-place-pour-texte_655456-142.jpg",
                 CategoryId = catDrinks,
                 Calories = 80
             },
@@ -288,7 +288,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Soda Ramune",
                 Description = "Limonade japonaise traditionnelle",
                 Price = 3.90m,
-                Image = "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=300&fit=crop",
+                Image = "https://cdnimg.webstaurantstore.com/images/products/large/821779/2835972.jpg",
                 CategoryId = catDrinks,
                 Calories = 90
             },
@@ -300,7 +300,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Mochi Glacé (2 pcs)",
                 Description = "Pâte de riz gluant fourrée à la glace",
                 Price = 4.90m,
-                Image = "https://images.unsplash.com/photo-1579306093888-251f2f01f465?w=400&h=300&fit=crop",
+                Image = "https://osakapoissy.fr/images/thumbs/0000474_mochi-glace-vanille-2-pieces_510.jpeg",
                 CategoryId = catDesserts,
                 Calories = 220,
                 IsPopular = true,
@@ -325,7 +325,7 @@ public class ApplicationDbContext : DbContext
                 Name = "Dorayaki",
                 Description = "Pancakes japonais à la pâte de haricot rouge",
                 Price = 4.20m,
-                Image = "https://images.unsplash.com/photo-1596450849206-ca7b65349e5d?w=400&h=300&fit=crop",
+                Image = "https://sudachirecipes.com/wp-content/uploads/2025/10/dorayaki-new-thumb.jpg",
                 CategoryId = catDesserts,
                 Calories = 280
             }
