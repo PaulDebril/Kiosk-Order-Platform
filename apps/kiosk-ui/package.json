@@ -14,6 +14,7 @@
     "dev": "vite",
     "start": "vite --mode electron",
     "build": "tsc && vite build && electron-builder",
+    "build:frontend-only": "tsc && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "dev:network": "vite --host"

@@ -61,30 +61,14 @@ export const productService = {
 };
 
 // Override les méthodes pour mapper correctement les données Backend -> Frontend
-interface RawProduct {
-    categoryName?: string;
-    options?: RawOption[];
-    categoryId?: string;
-    [key: string]: unknown;
-}
-
-interface RawOption {
-    id: string;
-    name: string;
-    type: string;
-    required: boolean;
-    maxQuantity?: number;
-    options: unknown[];
-}
-
 const originalGetAll = productService.getAllProducts;
 productService.getAllProducts = async () => {
     const rawProducts = await originalGetAll();
     // Mapper les champs qui diffèrent
-    return rawProducts.map((p: RawProduct) => ({
+    return rawProducts.map((p: any) => ({
         ...p,
         category: p.categoryName || 'Inconnu', // Map categoryName -> category
-        optionGroups: p.options ? p.options.map((opt: RawOption) => ({
+        optionGroups: p.options ? p.options.map((opt: any) => ({
             id: opt.id,
             name: opt.name,
             type: opt.type,
@@ -97,12 +81,12 @@ productService.getAllProducts = async () => {
 
 const originalGetById = productService.getProductById;
 productService.getProductById = async (id: string) => {
-    const p = await originalGetById(id) as RawProduct | undefined;
+    const p: any = await originalGetById(id);
     if (!p) return undefined;
     return {
         ...p,
         category: p.categoryName || 'Inconnu',
-        optionGroups: p.options ? p.options.map((opt: RawOption) => ({
+        optionGroups: p.options ? p.options.map((opt: any) => ({
             id: opt.id,
             name: opt.name,
             type: opt.type,
@@ -112,9 +96,3 @@ productService.getProductById = async (id: string) => {
         })) : []
     };
 };
-
-productService.getProductsByCategory = async (categoryId: string) => {
-    const all = await productService.getAllProducts();
-    return all.filter((p: RawProduct) => p.categoryId === categoryId);
-};
-
